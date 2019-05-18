@@ -16,46 +16,73 @@ class HeroInfo extends StatefulWidget {
 
 class _HeroInfoState extends State<HeroInfo> {
 
-  int _selected = 0;
+  int _skillSelected = 0;
+  int _skinSelected = 0;
 
   Widget _getSkillItem(int index, double width) {
-    return Padding(
-      padding: EdgeInsets.all(10),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _skillSelected = index;
+        });
+      },
+      child: Container(
+        width: width,
+        height: width,
+        padding: EdgeInsets.all(2),
+        margin: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(width/2),
+          ),
+          color: index==_skillSelected?Theme.of(context).primaryColor:null,
+        ),
+        child: CachedNetworkImage(
+          fit: BoxFit.fill,
+          imageUrl: 'https:${widget.hero.skills[index].image}',
+          placeholder: (BuildContext context, String url) {
+            return CircularProgressIndicator();
+          },
+          errorWidget: (BuildContext context, String url, Object error) {
+            if (widget.hero.skills == null) {
+              return CircularProgressIndicator();
+            }
+            return Icon(Icons.error_outline);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _getSkinItem(int index, double width) {
+    return Tooltip(
+      preferBelow: false,
+      message: widget.hero.skins[index].name,
       child: GestureDetector(
         onTap: () {
           setState(() {
-            _selected = index;
+            _skinSelected = index;
           });
         },
-        child: Stack(
-          alignment: AlignmentDirectional.center,
-          children: <Widget>[
-            Container(
-              width: width,
-              height: width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(width/2),
-                ),
-                color: index==_selected?Theme.of(context).primaryColor:null,
-              ),
-            ),
-            CachedNetworkImage(
-              fit: BoxFit.fill,
-              width: width-4,
-              height: width-4,
-              imageUrl: 'https:${widget.hero.skills[index].image}',
-              placeholder: (BuildContext context, String url) {
+        child: Container(
+          width: width,
+          height: width,
+          padding: EdgeInsets.all(2),
+          margin: EdgeInsets.all(5),
+          color: index==_skinSelected?Colors.white:null,
+          child: CachedNetworkImage(
+            fit: BoxFit.fill,
+            imageUrl: 'https:${widget.hero.skins[index].smallHref}',
+            placeholder: (BuildContext context, String url) {
+              return CircularProgressIndicator();
+            },
+            errorWidget: (BuildContext context, String url, Object error) {
+              if (widget.hero.skins == null) {
                 return CircularProgressIndicator();
-              },
-              errorWidget: (BuildContext context, String url, Object error) {
-                if (widget.hero.backImageUrl == null) {
-                  return CircularProgressIndicator();
-                }
-                return Icon(Icons.error_outline);
-              },
-            )
-          ],
+              }
+              return Icon(Icons.error_outline);
+            },
+          ),
         ),
       ),
     );
@@ -63,11 +90,11 @@ class _HeroInfoState extends State<HeroInfo> {
 
   @override
   void initState() {
-    if (widget.hero.backImageUrl == null) {
-      getHeroInfo(widget.hero, (backImageUrl, skills) {
+    if (widget.hero.skills == null) {
+      getHeroInfo(widget.hero, (skills, skins) {
         setState(() {
-          widget.hero.backImageUrl = backImageUrl;
           widget.hero.skills = skills;
+          widget.hero.skins = skins;
         });
       });
     }
@@ -85,20 +112,41 @@ class _HeroInfoState extends State<HeroInfo> {
       ),
       body: ListView(
         children: <Widget>[
-          CachedNetworkImage(
-            fit: BoxFit.cover,
+          SizedBox(
             width: width,
             height: width*3/4,
-            imageUrl: 'https:${widget.hero.backImageUrl}',
-            placeholder: (BuildContext context, String url) {
-              return CircularProgressIndicator();
-            },
-            errorWidget: (BuildContext context, String url, Object error) {
-              if (widget.hero.backImageUrl == null) {
-                return CircularProgressIndicator();
-              }
-              return Icon(Icons.error_outline);
-            },
+            child: Stack(
+              alignment: AlignmentDirectional.bottomStart,
+              children: <Widget>[
+                CachedNetworkImage(
+                  width: width,
+                  height: width*3/4,
+                  fit: BoxFit.cover,
+                  imageUrl: widget.hero.skins==null?'':'https:${widget.hero.skins[_skinSelected].href}',
+                  placeholder: (BuildContext context, String url) {
+                    return CircularProgressIndicator();
+                  },
+                  errorWidget: (BuildContext context, String url, Object error) {
+                    if (widget.hero.skins==null) {
+                      return CircularProgressIndicator();
+                    }
+                    return Icon(Icons.error_outline);
+                  },
+                ),
+                SizedBox(
+                  width: width,
+                  height: 70,
+                  child: ListView.builder(
+                    itemExtent: 70,
+                    itemCount: widget.hero.skins==null?0:widget.hero.skins.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _getSkinItem(index, 70);
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
           SizedBox(
             width: width,
@@ -108,25 +156,37 @@ class _HeroInfoState extends State<HeroInfo> {
               itemCount: widget.hero.skills==null?0:widget.hero.skills.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (BuildContext context, int index) {
-                return _getSkillItem(index, 70);
+                return _getSkillItem(index, 90);
               },
             ),
           ),
           Padding(
             padding: EdgeInsets.only(left: 10),
-            child: Text(
-              widget.hero.skills==null?'':widget.hero.skills[_selected].name,
-              style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 20
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  widget.hero.skills==null?'':widget.hero.skills[_skillSelected].name,
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 20
+                  ),
+                ),
+                Text(
+                  widget.hero.skills==null?'':('  ${widget.hero.skills[_skillSelected].cooling}  ${widget.hero.skills[_skillSelected].expend}'),
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 12
+                  ),
+                ),
+              ],
             ),
           ),
           Container(
             padding: EdgeInsets.all(10),
             margin: EdgeInsets.all(10),
             child: Text(
-                widget.hero.skills==null?'':widget.hero.skills[_selected].desc,
+                widget.hero.skills==null?'':widget.hero.skills[_skillSelected].desc,
                 style: TextStyle(
                   color: Colors.white
                 ),

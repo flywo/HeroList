@@ -19,7 +19,8 @@ class Application {
             hero: HeroData(
               href: parameters['href'].first.replaceAll('`', '/'),
               name: parameters['name'].first,
-              infoHref: parameters['infoHref'].first.replaceAll('`', '/')
+              infoHref: parameters['infoHref'].first.replaceAll('`', '/'),
+              number: parameters['number'].first
             ),
           );
         }

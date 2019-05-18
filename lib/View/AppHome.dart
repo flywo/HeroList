@@ -26,7 +26,7 @@ class _AppHomeState extends State<AppHome> {
       onTap: () {
         Application.router.navigateTo(
           context,
-          Uri.encodeFull('/hero_info?href=${hero.href.replaceAll('/', '`')}&name=${hero.name}&infoHref=${hero.infoHref.replaceAll('/', '`')}'),
+          Uri.encodeFull('/hero_info?href=${hero.href.replaceAll('/', '`')}&name=${hero.name}&infoHref=${hero.infoHref.replaceAll('/', '`')}&number=${hero.number}'),
           transition: TransitionType.native
         );
       },
