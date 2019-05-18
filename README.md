@@ -10,6 +10,12 @@
 
 ![image](https://github.com/flywo/HeroList/blob/master/hero.png)
 
+![image](https://github.com/flywo/HeroList/blob/master/item.png)
+
+![image](https://github.com/flywo/HeroList/blob/master/itemdet.png)
+
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

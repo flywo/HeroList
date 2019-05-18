@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import '../Model/HeroData.dart';
-import '../Net/Net.dart';
-import '../Router/AppRouter.dart';
-import 'package:fluro/fluro.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import '../View/HomeContent.dart';
+import '../View/ArticleContent.dart';
 
 
 class AppHome extends StatefulWidget {
@@ -19,66 +16,66 @@ class _AppHomeState extends State<AppHome> {
 //  var _itemWidth = (MediaQueryData.fromWindow(window).size.width - 40)/3;
 //  var _itemWidth = (GlobalKey().currentContext.size.width - 40)/3;
 
-  List<HeroData> _heroList = [];
+  int _currentTabbarIndex = 0;
 
-  Widget _getItem(double width, int index, HeroData hero) {
-    return GestureDetector(
-      onTap: () {
-        Application.router.navigateTo(
-          context,
-          Uri.encodeFull('/hero_info?href=${hero.href.replaceAll('/', '`')}&name=${hero.name}&infoHref=${hero.infoHref.replaceAll('/', '`')}&number=${hero.number}'),
-          transition: TransitionType.native
-        );
-      },
-      child: Column(
-        children: <Widget>[
-          CachedNetworkImage(
-            width: width,
-            height: width,
-            imageUrl: 'https:${hero.href}',
-            placeholder: (BuildContext context, String url) {
-              return CircularProgressIndicator();
-            },
-            errorWidget: (BuildContext context, String url, Object error) {
-              return Icon(Icons.error_outline);
-            },
-          ),
-          Text(hero.name),
-        ],
-      ),
-    );
+  Widget _getCurrentContent() {
+    Widget result;
+    switch (_currentTabbarIndex) {
+      case 0:
+        result = HomeContent();
+        break;
+      case 1:
+        result = ArticleContent();
+        break;
+    }
+    return result;
   }
 
-  @override
-  void initState() {
-    final future = getMain();
-    future.then((value) {
-      setState(() {
-        _heroList = value;
-      });
-    });
+  String _getCurrentTitle() {
+    String result;
+    switch (_currentTabbarIndex) {
+      case 0:
+        result = "英雄列表";
+        break;
+      case 1:
+        result = "物品列表";
+        break;
+    }
+    return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = (MediaQuery.of(context).size.width-40)/4;
-    final aspect = width/(width+20);
     return Scaffold(
         appBar: AppBar(
-          title: Text('英雄列表', style: TextStyle(color: Colors.white),),
+          title: Text(_getCurrentTitle(), style: TextStyle(color: Colors.white),),
         ),
-        body: GridView.builder(
-          itemCount: _heroList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return _getItem(width, index, _heroList[index]);
-          },
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: aspect
+        body: _getCurrentContent(),
+      bottomNavigationBar: BottomNavigationBar(
+        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home,),
+            title: Text(
+              '英雄'
+            )
           ),
-        )
+          BottomNavigationBarItem(
+              icon: Icon(Icons.apps,),
+              title: Text(
+                  '物品'
+              )
+          ),
+        ],
+        currentIndex: _currentTabbarIndex,
+        onTap: (int index) {
+          setState(() {
+            _currentTabbarIndex=index;
+          });
+        },
+      ),
     );
   }
 }

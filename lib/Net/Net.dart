@@ -4,6 +4,8 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 import '../Model/HeroData.dart';
 import 'package:gbk2utf8/gbk2utf8.dart';
+import '../Model/ArticleData.dart';
+import 'dart:convert';
 
 typedef void ReloadDataHandle(List<HeroSkill> skills, List<HeroSkin> skins);
 final MainUrl = 'https://pvp.qq.com/web201605/';
@@ -14,6 +16,7 @@ final dio = Dio(
     )
 );
 
+//获取英雄列表页
 Future<List<HeroData>> getMain() async {
   try {
     Response response = await dio.get(MainUrl+'herolist.shtml');
@@ -24,7 +27,7 @@ Future<List<HeroData>> getMain() async {
     print('main发生了错误: '+e.toString());
   }
 }
-
+//解析英雄列表
 List<HeroData> _parseHTML(String html) {
   List<HeroData> list = [];
   final doc = parse(html);
@@ -36,7 +39,7 @@ List<HeroData> _parseHTML(String html) {
   print('main解析完毕');
   return list;
 }
-
+//解析单个英雄
 HeroData _getHero(Element item) {
   final href = item.getElementsByTagName('img').first.attributes['src'];
   final name = item.getElementsByTagName('a').first.text;
@@ -51,7 +54,7 @@ HeroData _getHero(Element item) {
 
 
 
-
+//获取英雄信息页
 void getHeroInfo(HeroData hero, ReloadDataHandle handle) async {
   try {
     Response response = await dio.get(MainUrl+hero.infoHref);
@@ -66,8 +69,7 @@ void getHeroInfo(HeroData hero, ReloadDataHandle handle) async {
     print('info发生了错误: '+e.toString());
   }
 }
-
-
+//解析技能
 List<HeroSkill> _parseSkill(Document doc) {
   final images = doc.getElementsByClassName("skill-u1").first;
   final details = doc.getElementsByClassName('skill-show').first;
@@ -97,7 +99,7 @@ List<HeroSkill> _parseSkill(Document doc) {
   }
   return list;
 }
-
+//解析皮肤
 List<HeroSkin> _parseSkin(String heroNumber, Document doc) {
   final skinsStr = doc.getElementsByClassName('pic-pf-list pic-pf-list3').first.attributes['data-imgname'];
   final skins = skinsStr.split('|');
@@ -113,3 +115,50 @@ List<HeroSkin> _parseSkin(String heroNumber, Document doc) {
   }
   return list;
 }
+
+
+
+//获取物品页面
+Future<List<ArticleData>> getArticle() async {
+  try {
+    Response response = await dio.get(MainUrl+'item.shtml');
+    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('https://pvp.qq.com/web201605/js/item.json');
+    print('获取到article结果，开始解析');
+    final html = gbk.decode(response.data);
+    return _parseArticles(html, detailJson.toString());
+  } catch (e) {
+    print('article发生了错误: '+e.toString());
+  }
+}
+List<ArticleData> _parseArticles(String html, String json) {
+  List<ArticleData> list = [];
+  final doc = parse(html);
+  final items = doc.getElementsByClassName('clearfix herolist').first;
+  final itemDetails = jsonDecode(json);
+  Map<String, dynamic> map = {};
+  for (final item in itemDetails) {
+    map[item['item_id'].toString()] = item;
+  }
+  for (final item in items.children) {
+    list.add(_parseArticle(item, map));
+  }
+  return list;
+}
+ArticleData _parseArticle(Element item, Map<String, dynamic> map) {
+  final href = item.children[0].children[0].attributes['src'];
+  final name = item.children[0].text;
+  final ID = item.children[0].attributes['data-href'].split('.').first;
+  final data = map[ID];
+  return ArticleData(
+    href: href,
+    name: name,
+    ID: ID,
+    type: data['item_type'].toString(),
+    sellPrice: data['price'].toString(),
+    buyPrice: data['total_price'].toString(),
+    desc1: data['des1'].toString(),
+    desc2: data['des2']==null?'':data['des2']
+  );
+}
+
+
