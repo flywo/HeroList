@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../View/HomeContent.dart';
 import '../View/ArticleContent.dart';
+import '../View/CommonContent.dart';
 
 
 class AppHome extends StatefulWidget {
@@ -27,6 +28,9 @@ class _AppHomeState extends State<AppHome> {
       case 1:
         result = ArticleContent();
         break;
+      case 2:
+        result = CommonContent();
+        break;
     }
     return result;
   }
@@ -39,6 +43,9 @@ class _AppHomeState extends State<AppHome> {
         break;
       case 1:
         result = "物品列表";
+        break;
+      case 2:
+        result = "召唤师技能";
         break;
     }
     return result;
@@ -66,6 +73,12 @@ class _AppHomeState extends State<AppHome> {
               icon: Icon(Icons.apps,),
               title: Text(
                   '物品'
+              )
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.insert_emoticon,),
+              title: Text(
+                  '技能'
               )
           ),
         ],

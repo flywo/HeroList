@@ -33,3 +33,11 @@ class HeroVideo {
   String name;
   HeroVideo({this.href, this.imgHref, this.name});
 }
+
+
+class CommonSkill {
+  String name;
+  String href;
+  String showImageHref;
+  CommonSkill({this.name, this.href, this.showImageHref});
+}

@@ -2,7 +2,7 @@
 
 用Flutter写的王者荣耀英雄列表，后续继续完成更多功能。学习Flutter的练手项目。
 
-数据都是来自于网页抓取。学习嘛，不要在意不是通过接口获取的数据，只要学到了就行。
+数据都是来自于网页抓取。
 
 ![image](https://github.com/flywo/HeroList/blob/master/show.gif)
 
@@ -15,6 +15,8 @@
 ![image](https://github.com/flywo/HeroList/blob/master/itemdet.png)
 
 ![image](https://github.com/flywo/HeroList/blob/master/video.png)
+
+![image](https://github.com/flywo/HeroList/blob/master/common.png)
 
 ## Getting Started
 

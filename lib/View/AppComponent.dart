@@ -8,6 +8,7 @@ class AppComponent extends StatefulWidget {
 
   static List<ArticleData> articles;
   static List<HeroData> heros;
+  static List<CommonSkill> commonSkills;
 
   AppComponent({Key key}) : super(key: key);
   @override

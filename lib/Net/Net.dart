@@ -195,3 +195,33 @@ List<HeroVideo> _parseVideoHTML(String html) {
 }
 
 
+
+
+//获得召唤师技能
+Future<List<CommonSkill>> getCommonSkill() async {
+  try {
+    Response response = await dio.get(MainUrl+'summoner.shtml');
+    print('获取到main结果，开始解析');
+    final html = await gbk.decode(response.data);
+    return await _parseCommonHtml(html);
+  } catch (e) {
+    print('main发生了错误: '+e.toString());
+  }
+}
+List<CommonSkill> _parseCommonHtml(String html) {
+  final doc = parse(html);
+  final skills = doc.getElementsByClassName("imgtextlist spell-list").first;
+  List<CommonSkill> result = [];
+  for (final item in skills.children) {
+    String number = item.attributes['id'];
+    String name = item.children[1].text;
+    String href = item.children[0].attributes['src'];
+    result.add(CommonSkill(
+      name: name,
+      href: href,
+      showImageHref: "//game.gtimg.cn/images/yxzj/img201606/summoner/$number-big.jpg"
+    ));
+  }
+  return result;
+}
+

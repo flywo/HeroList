@@ -100,7 +100,7 @@ class _HeroVideoState extends State<HeroVideo> {
         leading: IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.white,), onPressed: () {
           Application.router.pop(context);
         }),
-        title: Text('英雄视频'),
+        title: Text('英雄视频', style: TextStyle(color: Colors.white),),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
