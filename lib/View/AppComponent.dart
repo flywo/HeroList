@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import '../Router/AppRouter.dart';
+import '../Model/ArticleData.dart';
+import '../Model/HeroData.dart';
 
 
 class AppComponent extends StatefulWidget {
+
+  static List<ArticleData> articles;
+  static List<HeroData> heros;
+
   AppComponent({Key key}) : super(key: key);
   @override
   State<StatefulWidget> createState() {

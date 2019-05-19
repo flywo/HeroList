@@ -3,6 +3,8 @@ import '../Model/HeroData.dart';
 import '../Net/Net.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../Router/AppRouter.dart';
+import 'package:fluro/fluro.dart';
+import '../View/AppComponent.dart';
 
 
 class HeroInfo extends StatefulWidget {
@@ -88,13 +90,59 @@ class _HeroInfoState extends State<HeroInfo> {
     );
   }
 
+  Widget _buildSkinStack(double width) {
+    if (widget.hero.skins == null) {
+      return Stack(
+        alignment: AlignmentDirectional.bottomStart,
+        children: <Widget>[
+          SizedBox(
+            width: width,
+            height: 70,
+            child: ListView.builder(
+              itemExtent: 70,
+              itemCount: widget.hero.skins==null?0:widget.hero.skins.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return _getSkinItem(index, 70);
+              },
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Stack(
+        alignment: AlignmentDirectional.bottomStart,
+        children: <Widget>[
+          CachedNetworkImage(
+            width: width,
+            height: width*3/4,
+            fit: BoxFit.cover,
+            imageUrl: 'https:${widget.hero.skins[_skinSelected].href}',
+          ),
+          SizedBox(
+            width: width,
+            height: 70,
+            child: ListView.builder(
+              itemExtent: 70,
+              itemCount: widget.hero.skins==null?0:widget.hero.skins.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return _getSkinItem(index, 70);
+              },
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
   @override
   void initState() {
     if (widget.hero.skills == null) {
       getHeroInfo(widget.hero, (skills, skins) {
         setState(() {
-          widget.hero.skills = skills;
           widget.hero.skins = skins;
+          widget.hero.skills = skills;
         });
       });
     }
@@ -115,38 +163,7 @@ class _HeroInfoState extends State<HeroInfo> {
           SizedBox(
             width: width,
             height: width*3/4,
-            child: Stack(
-              alignment: AlignmentDirectional.bottomStart,
-              children: <Widget>[
-                CachedNetworkImage(
-                  width: width,
-                  height: width*3/4,
-                  fit: BoxFit.cover,
-                  imageUrl: widget.hero.skins==null?'':'https:${widget.hero.skins[_skinSelected].href}',
-                  placeholder: (BuildContext context, String url) {
-                    return CircularProgressIndicator();
-                  },
-                  errorWidget: (BuildContext context, String url, Object error) {
-                    if (widget.hero.skins==null) {
-                      return CircularProgressIndicator();
-                    }
-                    return Icon(Icons.error_outline);
-                  },
-                ),
-                SizedBox(
-                  width: width,
-                  height: 70,
-                  child: ListView.builder(
-                    itemExtent: 70,
-                    itemCount: widget.hero.skins==null?0:widget.hero.skins.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      return _getSkinItem(index, 70);
-                    },
-                  ),
-                ),
-              ],
-            ),
+            child: _buildSkinStack(width),
           ),
           SizedBox(
             width: width,
@@ -196,6 +213,22 @@ class _HeroInfoState extends State<HeroInfo> {
                 Radius.circular(5),
               ),
               color: Theme.of(context).primaryColor,
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Application.router.navigateTo(context,
+                  Uri.encodeFull('/hero_info/hero_video?heroIndex=${AppComponent.heros.indexOf(widget.hero)}'),
+                  transition: TransitionType.native);
+            },
+            child: Padding(
+              padding: EdgeInsets.only(left: 10, top: 20),
+              child: Text('想学点技术？点击这里查看视频教学。',
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    decoration: TextDecoration.underline,
+                    decorationStyle: TextDecorationStyle.solid
+                ),),
             ),
           )
         ],

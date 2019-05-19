@@ -4,6 +4,7 @@ import '../Net/Net.dart';
 import '../Router/AppRouter.dart';
 import 'package:fluro/fluro.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../View/AppComponent.dart';
 
 
 class HomeContent extends StatefulWidget {
@@ -20,10 +21,15 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   void initState() {
+    if (AppComponent.heros != null) {
+      _heroList = AppComponent.heros;
+      return;
+    }
     final future = getMain();
     future.then((value) {
       setState(() {
         _heroList = value;
+        AppComponent.heros = value;
       });
     });
   }
@@ -33,7 +39,7 @@ class _HomeContentState extends State<HomeContent> {
       onTap: () {
         Application.router.navigateTo(
             context,
-            Uri.encodeFull('/hero_info?href=${hero.href.replaceAll('/', '`')}&name=${hero.name}&infoHref=${hero.infoHref.replaceAll('/', '`')}&number=${hero.number}'),
+            Uri.encodeFull('/hero_info?heroIndex=$index'),
             transition: TransitionType.native
         );
       },

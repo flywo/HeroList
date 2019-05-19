@@ -3,6 +3,7 @@ import '../Model/ArticleData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../Net/Net.dart';
 import '../CustomWidget/LoadingDialog.dart';
+import '../View/AppComponent.dart';
 
 
 class ArticleContent extends StatefulWidget {
@@ -19,10 +20,15 @@ class _ArticleContentState extends State<ArticleContent> {
 
   @override
   void initState() {
+    if (AppComponent.articles != null) {
+      _articleList = AppComponent.articles;
+      return;
+    }
     final future = getArticle();
     future.then((value) {
       setState(() {
         _articleList = value;
+        AppComponent.articles = value;
       });
     });
   }

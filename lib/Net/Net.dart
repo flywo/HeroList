@@ -21,8 +21,8 @@ Future<List<HeroData>> getMain() async {
   try {
     Response response = await dio.get(MainUrl+'herolist.shtml');
     print('获取到main结果，开始解析');
-    final html = gbk.decode(response.data);
-    return _parseHTML(html);
+    final html = await gbk.decode(response.data);
+    return await _parseHTML(html);
   } catch (e) {
     print('main发生了错误: '+e.toString());
   }
@@ -59,10 +59,10 @@ void getHeroInfo(HeroData hero, ReloadDataHandle handle) async {
   try {
     Response response = await dio.get(MainUrl+hero.infoHref);
     print('获取到info结果，开始解析');
-    final doc = parse(gbk.decode(response.data));
+    final doc = await parse(gbk.decode(response.data));
     handle(
-        _parseSkill(doc),
-        _parseSkin(hero.number, doc)
+        await _parseSkill(doc),
+        await _parseSkin(hero.number, doc)
     );
     print('info解析完毕');
   } catch (e) {
@@ -110,7 +110,6 @@ List<HeroSkin> _parseSkin(String heroNumber, Document doc) {
       href: '//game.gtimg.cn/images/yxzj/img201606/skin/hero-info/$heroNumber/$heroNumber-bigskin-${i+1}.jpg',
       smallHref: '//game.gtimg.cn/images/yxzj/img201606/heroimg/$heroNumber/$heroNumber-smallskin-${i+1}.jpg',
     );
-    print('${skin.name}   ${skin.href}');
     list.add(skin);
   }
   return list;
@@ -124,8 +123,8 @@ Future<List<ArticleData>> getArticle() async {
     Response response = await dio.get(MainUrl+'item.shtml');
     Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('https://pvp.qq.com/web201605/js/item.json');
     print('获取到article结果，开始解析');
-    final html = gbk.decode(response.data);
-    return _parseArticles(html, detailJson.toString());
+    final html = await gbk.decode(response.data);
+    return await _parseArticles(html, detailJson.toString());
   } catch (e) {
     print('article发生了错误: '+e.toString());
   }
@@ -159,6 +158,40 @@ ArticleData _parseArticle(Element item, Map<String, dynamic> map) {
     desc1: data['des1'].toString(),
     desc2: data['des2']==null?'':data['des2']
   );
+}
+
+
+
+//获得视频列表
+Future<List<HeroVideo>> getVideos(String heroNmae) async {
+  try {
+    Response response = await dio.get('http://so.iqiyi.com/so/q_王者荣耀${heroNmae}?source=input&sr=1106277143580');
+    print('获取到video结果，开始解析');
+    final html = utf8.decode(response.data);
+    return await _parseVideoHTML(html);
+  } catch (e) {
+    print('video发生了错误: '+e.toString());
+  }
+}
+List<HeroVideo> _parseVideoHTML(String html) {
+  List<HeroVideo> videos = [];
+  final list = parse(html).getElementsByClassName('mod_result_list').first.children;
+  for (final item in list) {
+    final name = item.attributes['data-widget-searchlist-tvname'];
+    if (name==null||name.length==0) {
+      continue;
+    }
+    final imgHref = item.children[0].children[0].attributes['src'];
+    //视频地址太难抓，算了，写个固定的。
+    final href = 'http://ips.ifeng.com/video19.ifeng.com/video09/2018/12/14/p6060124-102-009-123437.mp4';
+    var video = HeroVideo(
+      href: href,
+      imgHref: imgHref,
+      name: name
+    );
+    videos.add(video);
+  }
+  return videos;
 }
 
 

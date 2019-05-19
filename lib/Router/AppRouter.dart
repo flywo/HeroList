@@ -2,7 +2,8 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import '../View/AppHome.dart';
 import '../View/HeroInfo.dart';
-import '../Model/HeroData.dart';
+import '../View/AppComponent.dart';
+import '../View/HeroVideo.dart';
 
 class Application {
   static Router router;
@@ -15,13 +16,17 @@ class Application {
     ));
     router.define('/hero_info', handler: Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
+          int index = int.parse(parameters['heroIndex'].first);
           return HeroInfo(
-            hero: HeroData(
-              href: parameters['href'].first.replaceAll('`', '/'),
-              name: parameters['name'].first,
-              infoHref: parameters['infoHref'].first.replaceAll('`', '/'),
-              number: parameters['number'].first
-            ),
+            hero: AppComponent.heros[index],
+          );
+        }
+    ));
+    router.define('/hero_info/hero_video', handler: Handler(
+        handlerFunc: (BuildContext context, Map<String, List<String>> parameters) {
+          int index = int.parse(parameters['heroIndex'].first);
+          return HeroVideo(
+            hero: AppComponent.heros[index],
           );
         }
     ));

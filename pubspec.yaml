@@ -28,6 +28,9 @@ dependencies:
   fluro: ^1.4.0
   gbk2utf8: ^1.0.0
   cached_network_image: ^0.8.0
+  video_player: ^0.10.1
+  chewie: ^0.9.7
+  webview_flutter: ^0.3.7+1
 
 dev_dependencies:
   flutter_test:

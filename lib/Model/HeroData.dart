@@ -6,6 +6,7 @@ class HeroData {
   String infoHref;
   List<HeroSkill> skills;
   List<HeroSkin> skins;
+  List<HeroVideo> videos;
 
   HeroData({this.href, this.name, this.infoHref, this.number});
 }
@@ -24,4 +25,11 @@ class HeroSkill {
   String expend;
   String desc;
   HeroSkill({this.image, this.name, this.desc, this.cooling, this.expend});
+}
+
+class HeroVideo {
+  String href;
+  String imgHref;
+  String name;
+  HeroVideo({this.href, this.imgHref, this.name});
 }
