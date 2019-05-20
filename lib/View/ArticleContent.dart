@@ -20,6 +20,7 @@ class _ArticleContentState extends State<ArticleContent> {
 
   @override
   void initState() {
+    super.initState();
     if (AppComponent.articles != null) {
       _articleList = AppComponent.articles;
       return;
@@ -49,10 +50,10 @@ class _ArticleContentState extends State<ArticleContent> {
               fit: BoxFit.fill,
               imageUrl: 'https:${article.href}',
               placeholder: (BuildContext context, String url) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               },
               errorWidget: (BuildContext context, String url, Object error) {
-                return Icon(Icons.error_outline);
+                return const Icon(Icons.error_outline);
               },
             ),
           ),
@@ -69,10 +70,10 @@ class _ArticleContentState extends State<ArticleContent> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CircularProgressIndicator(),
+          const CircularProgressIndicator(),
           Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Text('加载中...'),
+            padding: const EdgeInsets.only(top: 20),
+            child: const Text('加载中...'),
           ),
         ],
       ),
@@ -83,7 +84,7 @@ class _ArticleContentState extends State<ArticleContent> {
     final width = (MediaQuery.of(context).size.width-40)/4;
     final aspect = width/(width+20);
     return GridView.builder(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       itemCount: _articleList.length,
       itemBuilder: (BuildContext context, int index) {
         return _getItem(width, index, _articleList[index]);

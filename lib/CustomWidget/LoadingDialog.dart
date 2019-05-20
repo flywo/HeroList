@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 
 class LoadingDialog extends Dialog {
-  String text;
+  final String text;
   LoadingDialog({Key key, @required this.text}) : super(key: key);
 
   @override
@@ -57,7 +57,7 @@ class LoadingDialog extends Dialog {
 
 
 class ArticleDialog extends Dialog {
-  ArticleData article;
+  final ArticleData article;
   ArticleDialog({Key key, @required this.article}) : super(key: key);
 
   @override

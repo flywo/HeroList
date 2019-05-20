@@ -10,7 +10,7 @@ import '../Model/ArticleData.dart';
 
 
 class HeroInfo extends StatefulWidget {
-  HeroData hero;
+  final HeroData hero;
   HeroInfo({Key key, this.hero}): super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -34,8 +34,8 @@ class _HeroInfoState extends State<HeroInfo> {
       child: Container(
         width: width,
         height: width,
-        padding: EdgeInsets.all(2),
-        margin: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(2),
+        margin: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(
             Radius.circular(width/2),
@@ -46,13 +46,13 @@ class _HeroInfoState extends State<HeroInfo> {
           fit: BoxFit.fill,
           imageUrl: 'https:${widget.hero.skills[index].image}',
           placeholder: (BuildContext context, String url) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           },
           errorWidget: (BuildContext context, String url, Object error) {
             if (widget.hero.skills == null) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
-            return Icon(Icons.error_outline);
+            return const Icon(Icons.error_outline);
           },
         ),
       ),
@@ -72,20 +72,20 @@ class _HeroInfoState extends State<HeroInfo> {
         child: Container(
           width: width,
           height: width,
-          padding: EdgeInsets.all(2),
-          margin: EdgeInsets.all(5),
+          padding: const EdgeInsets.all(2),
+          margin: const EdgeInsets.all(5),
           color: index==_skinSelected?Colors.white:null,
           child: CachedNetworkImage(
             fit: BoxFit.fill,
             imageUrl: 'https:${widget.hero.skins[index].smallHref}',
             placeholder: (BuildContext context, String url) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             },
             errorWidget: (BuildContext context, String url, Object error) {
               if (widget.hero.skins == null) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
-              return Icon(Icons.error_outline);
+              return const Icon(Icons.error_outline);
             },
           ),
         ),
@@ -156,10 +156,10 @@ class _HeroInfoState extends State<HeroInfo> {
           _recommendSelected = 0;
         });
       },
-      child: Text('推荐出装一'),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
+      child: const Text('推荐出装一'),
+      shape: const RoundedRectangleBorder(
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(10), bottomLeft: const Radius.circular(10)),
       ),
     );
     final button2 = FlatButton(
@@ -175,16 +175,16 @@ class _HeroInfoState extends State<HeroInfo> {
           _recommendSelected = 1;
         });
       },
-      child: Text('推荐出装二'),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            bottomRight: Radius.circular(10), topRight: Radius.circular(10)),
+      child: const Text('推荐出装二'),
+      shape: const RoundedRectangleBorder(
+        borderRadius: const BorderRadius.only(
+            bottomRight: const Radius.circular(10), topRight: const Radius.circular(10)),
       ),
     );
     final value = (_recommendSelected==0?widget.hero.recommend1:widget.hero.recommend2).split('|');
     return <Widget>[
       Padding(
-        padding: EdgeInsets.only(left: 10, right: 10),
+        padding: const EdgeInsets.only(left: 10, right: 10),
         child: Row(
           children: <Widget>[
             button1,
@@ -212,8 +212,8 @@ class _HeroInfoState extends State<HeroInfo> {
         ],
       ),
       Container(
-        padding: EdgeInsets.all(10),
-        margin: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.all(10),
         child: Text(
           _recommendSelected==0?widget.hero.recommend1desc:widget.hero.recommend2desc,
           style: TextStyle(
@@ -221,8 +221,8 @@ class _HeroInfoState extends State<HeroInfo> {
           ),
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(5),
+          borderRadius: const BorderRadius.all(
+            const Radius.circular(5),
           ),
           color: Theme.of(context).primaryColor,
         ),
@@ -257,13 +257,13 @@ class _HeroInfoState extends State<HeroInfo> {
           fit: BoxFit.fill,
           imageUrl: 'https:${article.href}',
           placeholder: (BuildContext context, String url) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           },
           errorWidget: (BuildContext context, String url, Object error) {
             if (widget.hero.skills == null) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
-            return Icon(Icons.error_outline);
+            return const Icon(Icons.error_outline);
           },
         ),
       ),
@@ -272,6 +272,7 @@ class _HeroInfoState extends State<HeroInfo> {
 
   @override
   void initState() {
+    super.initState();
     if (widget.hero.skills == null) {
       getHeroInfo(widget.hero, (skills, skins, recommends) {
         setState(() {
@@ -295,7 +296,7 @@ class _HeroInfoState extends State<HeroInfo> {
         leading: IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.white,), onPressed: () {
           Application.router.pop(context);
         }),
-        title: Text(widget.hero.name, style: TextStyle(color: Colors.white),),
+        title: Text(widget.hero.name, style: const TextStyle(color: Colors.white),),
       ),
       body: ListView(
         children: <Widget>[
@@ -317,7 +318,7 @@ class _HeroInfoState extends State<HeroInfo> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -339,17 +340,17 @@ class _HeroInfoState extends State<HeroInfo> {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(10),
-            margin: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: Text(
                 widget.hero.skills==null?'':widget.hero.skills[_skillSelected].desc,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white
                 ),
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(5),
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(5),
               ),
               color: Theme.of(context).primaryColor,
             ),
@@ -367,7 +368,7 @@ class _HeroInfoState extends State<HeroInfo> {
                   transition: TransitionType.native);
             },
             child: Padding(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Text('想学点技术？点击这里查看视频教学。',
                 style: TextStyle(
                     color: Theme.of(context).primaryColor,

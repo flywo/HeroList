@@ -8,7 +8,7 @@ import '../Net/Net.dart';
 
 
 class HeroVideo extends StatefulWidget {
-  HeroData hero;
+  final HeroData hero;
   HeroVideo({Key key, this.hero}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -37,13 +37,13 @@ class _HeroVideoState extends State<HeroVideo> {
               fit: BoxFit.fill,
               imageUrl: 'https:${widget.hero.videos[index].imgHref}',
               placeholder: (BuildContext context, String url) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               },
               errorWidget: (BuildContext context, String url, Object error) {
                 if (widget.hero.skills == null) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
-                return Icon(Icons.error_outline);
+                return const Icon(Icons.error_outline);
               },
             ),
           ),
@@ -67,6 +67,7 @@ class _HeroVideoState extends State<HeroVideo> {
 
   @override
   void initState() {
+    super.initState();
     if (widget.hero.videos==null) {
       getVideos(widget.hero.name).then((value) {
         setState(() {
@@ -99,10 +100,10 @@ class _HeroVideoState extends State<HeroVideo> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CircularProgressIndicator(),
-          Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Text('加载中...'),
+          const CircularProgressIndicator(),
+          const Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: const Text('加载中...'),
           ),
         ],
       ),
@@ -111,13 +112,12 @@ class _HeroVideoState extends State<HeroVideo> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(icon: Icon(Icons.arrow_back_ios, color: Colors.white,), onPressed: () {
           Application.router.pop(context);
         }),
-        title: Text('英雄视频', style: TextStyle(color: Colors.white),),
+        title: const Text('英雄视频', style: TextStyle(color: Colors.white),),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -130,7 +130,7 @@ class _HeroVideoState extends State<HeroVideo> {
           Expanded(
             child: widget.hero.videos==null? loading() : ListView.builder(
               itemExtent: 100,
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               itemCount: widget.hero.videos==null?0:widget.hero.videos.length,
               itemBuilder: (BuildContext context, int index) {
                 return _getVideoItem(index);

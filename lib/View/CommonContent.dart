@@ -20,6 +20,7 @@ class _CommonContentState extends State<CommonContent> {
 
   @override
   void initState() {
+    super.initState();
     if (AppComponent.commonSkills != null) {
       _skills = AppComponent.commonSkills;
       return;
@@ -46,17 +47,17 @@ class _CommonContentState extends State<CommonContent> {
             width: width,
             height: width,
             color: _selected==index?Theme.of(context).primaryColor:Colors.white,
-            padding: EdgeInsets.all(2),
+            padding: const EdgeInsets.all(2),
             child: CachedNetworkImage(
               width: width-4,
               height: width-4,
               fit: BoxFit.fill,
               imageUrl: 'https:${_skills[index].href}',
               placeholder: (BuildContext context, String url) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               },
               errorWidget: (BuildContext context, String url, Object error) {
-                return Icon(Icons.error_outline);
+                return const Icon(Icons.error_outline);
               },
             ),
           ),
@@ -73,10 +74,10 @@ class _CommonContentState extends State<CommonContent> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CircularProgressIndicator(),
-          Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Text('加载中...'),
+          const CircularProgressIndicator(),
+          const Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: const Text('加载中...'),
           ),
         ],
       ),
@@ -99,10 +100,10 @@ class _CommonContentState extends State<CommonContent> {
             fit: BoxFit.fill,
             imageUrl: 'https:${_skills[_selected].showImageHref}',
             placeholder: (BuildContext context, String url) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             },
             errorWidget: (BuildContext context, String url, Object error) {
-              return Icon(Icons.error_outline);
+              return const Icon(Icons.error_outline);
             },
           ),
         ),
@@ -142,7 +143,7 @@ class _CommonContentState extends State<CommonContent> {
         ),
         Expanded(
           child: GridView.builder(
-            padding: EdgeInsets.all(5),
+            padding: const EdgeInsets.all(5),
             itemCount: _skills.length,
             itemBuilder: (BuildContext context, int index) {
               return _getItem(width, index);

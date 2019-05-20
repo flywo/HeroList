@@ -21,6 +21,7 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   void initState() {
+    super.initState();
     if (AppComponent.articles == null) {
       final future = getArticle();
       future.then((value) {
@@ -60,10 +61,10 @@ class _HomeContentState extends State<HomeContent> {
               fit: BoxFit.fill,
               imageUrl: 'https:${hero.href}',
               placeholder: (BuildContext context, String url) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               },
               errorWidget: (BuildContext context, String url, Object error) {
-                return Icon(Icons.error_outline);
+                return const Icon(Icons.error_outline);
               },
             ),
           ),
@@ -80,10 +81,10 @@ class _HomeContentState extends State<HomeContent> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CircularProgressIndicator(),
-          Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Text('加载中...'),
+          const CircularProgressIndicator(),
+          const Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: const Text('加载中...'),
           ),
         ],
       ),
@@ -94,7 +95,7 @@ class _HomeContentState extends State<HomeContent> {
     final width = (MediaQuery.of(context).size.width-40)/4;
     final aspect = width/(width+20);
     return GridView.builder(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       itemCount: _heroList.length,
       itemBuilder: (BuildContext context, int index) {
         return _getItem(width, index, _heroList[index]);

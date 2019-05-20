@@ -1,4 +1,21 @@
 
+enum PlayType {
+  Free,//免费
+  New,//新手推荐
+  Normal//普通英雄
+}
+
+enum HeroType {
+  All,//所有
+  Tank,//坦克
+  Fight,//战士
+  Assassin,//刺客
+  Master,//法师
+  Shooter,//射手
+  Assist//辅助
+}
+
+
 //英雄
 class HeroData {
   //英雄头像url
@@ -17,10 +34,13 @@ class HeroData {
   String recommend2;
   //出装2描述
   String recommend2desc;
-  //
+  //免费标志
   int payType;
+  //英雄定位
   int heroType;
+  //新手推荐
   int newType;
+  //定位2
   int heroType2;
   //技能
   List<HeroSkill> skills;

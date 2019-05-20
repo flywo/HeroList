@@ -51,11 +51,27 @@ class _AppHomeState extends State<AppHome> {
     return result;
   }
 
+  List<Widget> _showScreen() {
+    if (_currentTabbarIndex==2) {
+      return [];
+    } else {
+      return [
+        IconButton(
+          icon: const Icon(Icons.settings, color: Colors.white,),
+          onPressed: () {
+
+          },
+        ),
+      ];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(_getCurrentTitle(), style: TextStyle(color: Colors.white),),
+          title: Text(_getCurrentTitle(), style: const TextStyle(color: Colors.white),),
+          actions: _showScreen(),
         ),
         body: _getCurrentContent(),
       bottomNavigationBar: BottomNavigationBar(
@@ -64,20 +80,20 @@ class _AppHomeState extends State<AppHome> {
         backgroundColor: Theme.of(context).primaryColor,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home,),
-            title: Text(
+            icon: const Icon(Icons.home,),
+            title: const Text(
               '英雄'
             )
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.apps,),
-              title: Text(
+              icon: const Icon(Icons.apps,),
+              title: const Text(
                   '物品'
               )
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.insert_emoticon,),
-              title: Text(
+              icon: const Icon(Icons.insert_emoticon,),
+              title: const Text(
                   '技能'
               )
           ),

@@ -23,15 +23,16 @@ final dio = Dio(
 //获取英雄列表页
 Future<List<HeroData>> getMain() async {
   try {
-    Response response = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('${MainUrl}${HeroList}');
+    Response response = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get(MainUrl+HeroList);
     print('获取到main结果，开始解析');
     return await _parseHTML(response.toString());
   } catch (e) {
     print('main发生了错误: '+e.toString());
+    return null;
   }
 }
 //解析英雄列表
-List<HeroData> _parseHTML(String json) {
+Future<List<HeroData>> _parseHTML(String json) async {
   List<HeroData> list = [];
   final heros = jsonDecode(json) as List<dynamic>;
   for (var i=heros.length-1; i>-1; i-- ) {
@@ -58,7 +59,7 @@ void getHeroInfo(HeroData hero, ReloadDataHandle handle) async {
   try {
     Response response = await dio.get(MainUrl+hero.infoHref);
     print('获取到info结果，开始解析');
-    final doc = await parse(gbk.decode(response.data));
+    final doc = parse(gbk.decode(response.data));
     handle(
         await _parseSkill(doc),
         await _parseSkin(hero.number, doc),
@@ -70,7 +71,7 @@ void getHeroInfo(HeroData hero, ReloadDataHandle handle) async {
   }
 }
 //解析技能
-List<HeroSkill> _parseSkill(Document doc) {
+Future<List<HeroSkill>> _parseSkill(Document doc) async {
   final images = doc.getElementsByClassName("skill-u1").first;
   final details = doc.getElementsByClassName('skill-show').first;
   List<HeroSkill> list = [];
@@ -100,7 +101,7 @@ List<HeroSkill> _parseSkill(Document doc) {
   return list;
 }
 //解析皮肤
-List<HeroSkin> _parseSkin(String heroNumber, Document doc) {
+Future<List<HeroSkin>> _parseSkin(String heroNumber, Document doc) async {
   final skinsStr = doc.getElementsByClassName('pic-pf-list pic-pf-list3').first.attributes['data-imgname'];
   final skins = skinsStr.split('|');
   List<HeroSkin> list = [];
@@ -115,7 +116,7 @@ List<HeroSkin> _parseSkin(String heroNumber, Document doc) {
   return list;
 }
 //解析出装
-List<String> _parseRecommend(Document doc) {
+Future<List<String>> _parseRecommend(Document doc) async {
   final recommends = doc.getElementsByClassName('equip-bd').first;
   final recommend1 = recommends.children[0].children[0].attributes['data-item'];
   final recommend2 = recommends.children[1].children[0].attributes['data-item'];
@@ -128,14 +129,15 @@ List<String> _parseRecommend(Document doc) {
 //获取物品页面
 Future<List<ArticleData>> getArticle() async {
   try {
-    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('${MainUrl}${ItemList}');
+    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get(MainUrl+ItemList);
     print('获取到article结果，开始解析');
     return await _parseArticles(detailJson.toString());
   } catch (e) {
     print('article发生了错误: '+e.toString());
+    return null;
   }
 }
-List<ArticleData> _parseArticles(String json) {
+Future<List<ArticleData>> _parseArticles(String json) async {
   List<ArticleData> list = [];
   final itemDetails = jsonDecode(json);
   for (final item in itemDetails) {
@@ -156,15 +158,16 @@ List<ArticleData> _parseArticles(String json) {
 //获得视频列表
 Future<List<HeroVideo>> getVideos(String heroNmae) async {
   try {
-    Response response = await dio.get('http://so.iqiyi.com/so/q_王者荣耀${heroNmae}?source=input&sr=1106277143580');
+    Response response = await dio.get('http://so.iqiyi.com/so/q_王者荣耀$heroNmae?source=input&sr=1106277143580');
     print('获取到video结果，开始解析');
     final html = utf8.decode(response.data);
     return await _parseVideoHTML(html);
   } catch (e) {
     print('video发生了错误: '+e.toString());
+    return null;
   }
 }
-List<HeroVideo> _parseVideoHTML(String html) {
+Future<List<HeroVideo>> _parseVideoHTML(String html) async {
   List<HeroVideo> videos = [];
   final list = parse(html).getElementsByClassName('mod_result_list').first.children;
   for (final item in list) {
@@ -191,14 +194,15 @@ List<HeroVideo> _parseVideoHTML(String html) {
 //获得召唤师技能
 Future<List<CommonSkill>> getCommonSkill() async {
   try {
-    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('${MainUrl}${SummonerList}');
+    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get(MainUrl+SummonerList);
     print('获取到skill结果，开始解析');
     return await _parseCommonHtml(detailJson.toString());
   } catch (e) {
     print('skill发生了错误: '+e.toString());
+    return null;
   }
 }
-List<CommonSkill> _parseCommonHtml(String json) {
+Future<List<CommonSkill>> _parseCommonHtml(String json) async {
   List<CommonSkill> result = [];
   final details = jsonDecode(json);
   for (final item in details) {
