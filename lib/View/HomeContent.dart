@@ -51,17 +51,21 @@ class _HomeContentState extends State<HomeContent> {
       },
       child: Column(
         children: <Widget>[
-          CachedNetworkImage(
+          SizedBox(
             width: width,
             height: width,
-            fit: BoxFit.fill,
-            imageUrl: 'https:${hero.href}',
-            placeholder: (BuildContext context, String url) {
-              return CircularProgressIndicator();
-            },
-            errorWidget: (BuildContext context, String url, Object error) {
-              return Icon(Icons.error_outline);
-            },
+            child: CachedNetworkImage(
+              width: width,
+              height: width,
+              fit: BoxFit.fill,
+              imageUrl: 'https:${hero.href}',
+              placeholder: (BuildContext context, String url) {
+                return CircularProgressIndicator();
+              },
+              errorWidget: (BuildContext context, String url, Object error) {
+                return Icon(Icons.error_outline);
+              },
+            ),
           ),
           Text(hero.name),
         ],

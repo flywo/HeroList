@@ -43,6 +43,8 @@ class _CommonContentState extends State<CommonContent> {
       child: Column(
         children: <Widget>[
           Container(
+            width: width,
+            height: width,
             color: _selected==index?Theme.of(context).primaryColor:Colors.white,
             padding: EdgeInsets.all(2),
             child: CachedNetworkImage(

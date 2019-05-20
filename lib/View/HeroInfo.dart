@@ -200,6 +200,9 @@ class _HeroInfoState extends State<HeroInfo> {
           _buildArticleImage(value[2]),
         ],
       ),
+      SizedBox(
+        height: 10,
+      ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
@@ -245,8 +248,9 @@ class _HeroInfoState extends State<HeroInfo> {
       onTap: () {
         showDetail(article);
       },
-      child: Padding(
-        padding: EdgeInsets.all(5),
+      child: SizedBox(
+        width: 100,
+        height: 100,
         child: CachedNetworkImage(
           height: 100,
           width: 100,
