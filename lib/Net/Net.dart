@@ -7,7 +7,7 @@ import 'package:gbk2utf8/gbk2utf8.dart';
 import '../Model/ArticleData.dart';
 import 'dart:convert';
 
-typedef void ReloadDataHandle(List<HeroSkill> skills, List<HeroSkin> skins);
+typedef void ReloadDataHandle(List<HeroSkill> skills, List<HeroSkin> skins, List<String> recommond);
 final MainUrl = 'https://pvp.qq.com/web201605/';
 final dio = Dio(
     BaseOptions(
@@ -62,7 +62,8 @@ void getHeroInfo(HeroData hero, ReloadDataHandle handle) async {
     final doc = await parse(gbk.decode(response.data));
     handle(
         await _parseSkill(doc),
-        await _parseSkin(hero.number, doc)
+        await _parseSkin(hero.number, doc),
+        await _parseRecommend(doc),
     );
     print('info解析完毕');
   } catch (e) {
@@ -114,7 +115,15 @@ List<HeroSkin> _parseSkin(String heroNumber, Document doc) {
   }
   return list;
 }
-
+//解析出装
+List<String> _parseRecommend(Document doc) {
+  final recommends = doc.getElementsByClassName('equip-bd').first;
+  final recommend1 = recommends.children[0].children[0].attributes['data-item'];
+  final recommend2 = recommends.children[1].children[0].attributes['data-item'];
+  final recommend1desc = recommends.children[0].children[1].text;
+  final recommend2desc = recommends.children[1].children[1].text;
+  return [recommend1, recommend1desc, recommend2, recommend2desc];
+}
 
 
 //获取物品页面

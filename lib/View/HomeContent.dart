@@ -21,6 +21,12 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   void initState() {
+    if (AppComponent.articles == null) {
+      final future = getArticle();
+      future.then((value) {
+        AppComponent.articles = value;
+      });
+    }
     if (AppComponent.heros != null) {
       _heroList = AppComponent.heros;
       return;

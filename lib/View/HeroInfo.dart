@@ -5,6 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../Router/AppRouter.dart';
 import 'package:fluro/fluro.dart';
 import '../View/AppComponent.dart';
+import '../CustomWidget/LoadingDialog.dart';
+import '../Model/ArticleData.dart';
 
 
 class HeroInfo extends StatefulWidget {
@@ -20,6 +22,7 @@ class _HeroInfoState extends State<HeroInfo> {
 
   int _skillSelected = 0;
   int _skinSelected = 0;
+  int _recommendSelected = 0;
 
   Widget _getSkillItem(int index, double width) {
     return GestureDetector(
@@ -136,13 +139,145 @@ class _HeroInfoState extends State<HeroInfo> {
     }
   }
 
+  List<Widget> _getRecommend() {
+    if (widget.hero.recommend1==null) {
+      return [];
+    }
+    final button1 = FlatButton(
+      color: _recommendSelected == 0 ? Theme
+          .of(context)
+          .primaryColor : Colors.grey,
+      textColor: Colors.white,
+      onPressed: () {
+        if (_recommendSelected == 0) {
+          return;
+        }
+        setState(() {
+          _recommendSelected = 0;
+        });
+      },
+      child: Text('推荐出装一'),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
+      ),
+    );
+    final button2 = FlatButton(
+      color: _recommendSelected == 1 ? Theme
+          .of(context)
+          .primaryColor : Colors.grey,
+      textColor: Colors.white,
+      onPressed: () {
+        if (_recommendSelected == 1) {
+          return;
+        }
+        setState(() {
+          _recommendSelected = 1;
+        });
+      },
+      child: Text('推荐出装二'),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            bottomRight: Radius.circular(10), topRight: Radius.circular(10)),
+      ),
+    );
+    final value = (_recommendSelected==0?widget.hero.recommend1:widget.hero.recommend2).split('|');
+    return <Widget>[
+      Padding(
+        padding: EdgeInsets.only(left: 10, right: 10),
+        child: Row(
+          children: <Widget>[
+            button1,
+            button2,
+          ],
+        ),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          _buildArticleImage(value[0]),
+          _buildArticleImage(value[1]),
+          _buildArticleImage(value[2]),
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          _buildArticleImage(value[3]),
+          _buildArticleImage(value[4]),
+          _buildArticleImage(value[5]),
+        ],
+      ),
+      Container(
+        padding: EdgeInsets.all(10),
+        margin: EdgeInsets.all(10),
+        child: Text(
+          _recommendSelected==0?widget.hero.recommend1desc:widget.hero.recommend2desc,
+          style: TextStyle(
+              color: Colors.white
+          ),
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(5),
+          ),
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+    ];
+  }
+
+  void showDetail(ArticleData aritcle) {
+    print(aritcle.desc1);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ArticleDialog(article: aritcle);
+        });
+  }
+
+  Widget _buildArticleImage(String index) {
+    if (AppComponent.articles==null) {
+      return null;
+    }
+    final article = AppComponent.articles[AppComponent.articles.indexWhere((value) => value.ID==index)];
+    return GestureDetector(
+      onTap: () {
+        showDetail(article);
+      },
+      child: Padding(
+        padding: EdgeInsets.all(5),
+        child: CachedNetworkImage(
+          height: 100,
+          width: 100,
+          fit: BoxFit.fill,
+          imageUrl: 'https:${article.href}',
+          placeholder: (BuildContext context, String url) {
+            return CircularProgressIndicator();
+          },
+          errorWidget: (BuildContext context, String url, Object error) {
+            if (widget.hero.skills == null) {
+              return CircularProgressIndicator();
+            }
+            return Icon(Icons.error_outline);
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     if (widget.hero.skills == null) {
-      getHeroInfo(widget.hero, (skills, skins) {
+      getHeroInfo(widget.hero, (skills, skins, recommends) {
         setState(() {
           widget.hero.skins = skins;
           widget.hero.skills = skills;
+          widget.hero.recommend1 = recommends[0];
+          widget.hero.recommend1desc = recommends[1];
+          widget.hero.recommend2 = recommends[2];
+          widget.hero.recommend2desc = recommends[3];
+          print(recommends[0]);
         });
       });
     }
@@ -215,6 +350,12 @@ class _HeroInfoState extends State<HeroInfo> {
               color: Theme.of(context).primaryColor,
             ),
           ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: _getRecommend(),
+          ),
           GestureDetector(
             onTap: () {
               Application.router.navigateTo(context,
@@ -222,7 +363,7 @@ class _HeroInfoState extends State<HeroInfo> {
                   transition: TransitionType.native);
             },
             child: Padding(
-              padding: EdgeInsets.only(left: 10, top: 20),
+              padding: EdgeInsets.all(10),
               child: Text('想学点技术？点击这里查看视频教学。',
                 style: TextStyle(
                     color: Theme.of(context).primaryColor,

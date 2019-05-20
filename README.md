@@ -10,11 +10,13 @@
 
 ![image](https://github.com/flywo/HeroList/blob/master/hero.png)
 
+![image](https://github.com/flywo/HeroList/blob/master/video.png)
+
+![image](https://github.com/flywo/HeroList/blob/master/recommend.png)
+
 ![image](https://github.com/flywo/HeroList/blob/master/item.png)
 
 ![image](https://github.com/flywo/HeroList/blob/master/itemdet.png)
-
-![image](https://github.com/flywo/HeroList/blob/master/video.png)
 
 ![image](https://github.com/flywo/HeroList/blob/master/common.png)
 
