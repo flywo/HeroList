@@ -106,6 +106,40 @@ class _CommonContentState extends State<CommonContent> {
             },
           ),
         ),
+        Padding(
+          padding: EdgeInsets.only(left: 10, top: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                _skills.length==0?'':_skills[_selected].name,
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 20
+                ),
+              ),
+              Text(
+                _skills.length==0?'':_skills[_selected].rank,
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 12
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(10),
+          margin: EdgeInsets.all(10),
+          color: Theme.of(context).primaryColor,
+          width: MediaQuery.of(context).size.width-20,
+          child: Text(
+            _skills.length==0?'':_skills[_selected].description,
+            style: TextStyle(
+                color: Colors.white
+            ),
+          ),
+        ),
         Expanded(
           child: GridView.builder(
             padding: EdgeInsets.all(5),

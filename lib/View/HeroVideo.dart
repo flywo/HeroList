@@ -92,6 +92,23 @@ class _HeroVideoState extends State<HeroVideo> {
     );
   }
 
+  Widget loading() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          CircularProgressIndicator(),
+          Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Text('加载中...'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -111,7 +128,7 @@ class _HeroVideoState extends State<HeroVideo> {
             controller: _chewieController,
           ),
           Expanded(
-            child: ListView.builder(
+            child: widget.hero.videos==null? loading() : ListView.builder(
               itemExtent: 100,
               padding: EdgeInsets.all(5),
               itemCount: widget.hero.videos==null?0:widget.hero.videos.length,

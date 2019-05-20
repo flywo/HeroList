@@ -72,5 +72,11 @@ class CommonSkill {
   String href;
   //大图url
   String showImageHref;
-  CommonSkill({this.name, this.href, this.showImageHref});
+  //技能ID
+  String ID;
+  //解锁时间
+  String rank;
+  //描述
+  String description;
+  CommonSkill({this.name, this.href, this.showImageHref, this.ID, this.rank, this.description});
 }
