@@ -17,6 +17,11 @@ class HeroData {
   String recommend2;
   //出装2描述
   String recommend2desc;
+  //
+  int payType;
+  int heroType;
+  int newType;
+  int heroType2;
   //技能
   List<HeroSkill> skills;
   //皮肤
@@ -24,7 +29,7 @@ class HeroData {
   //视频
   List<HeroVideo> videos;
 
-  HeroData({this.href, this.name, this.infoHref, this.number});
+  HeroData({this.href, this.name, this.infoHref, this.number, this.payType, this.heroType, this.newType, this.heroType2});
 }
 
 //技能

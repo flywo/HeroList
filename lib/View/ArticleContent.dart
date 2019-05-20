@@ -98,7 +98,6 @@ class _ArticleContentState extends State<ArticleContent> {
   }
 
   void showDetail(ArticleData aritcle) {
-    print(aritcle.desc1);
     showDialog(
       context: context,
       builder: (BuildContext context) {

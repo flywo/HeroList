@@ -9,6 +9,10 @@ import 'dart:convert';
 
 typedef void ReloadDataHandle(List<HeroSkill> skills, List<HeroSkin> skins, List<String> recommond);
 final MainUrl = 'https://pvp.qq.com/web201605/';
+final HeroList = 'js/herolist.json';
+final SummonerList = 'js/summoner.json';
+final ItemList = 'js/item.json';
+
 final dio = Dio(
     BaseOptions(
         contentType: ContentType.html,
@@ -19,37 +23,32 @@ final dio = Dio(
 //获取英雄列表页
 Future<List<HeroData>> getMain() async {
   try {
-    Response response = await dio.get(MainUrl+'herolist.shtml');
+    Response response = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('${MainUrl}${HeroList}');
     print('获取到main结果，开始解析');
-    final html = await gbk.decode(response.data);
-    return await _parseHTML(html);
+    return await _parseHTML(response.toString());
   } catch (e) {
     print('main发生了错误: '+e.toString());
   }
 }
 //解析英雄列表
-List<HeroData> _parseHTML(String html) {
+List<HeroData> _parseHTML(String json) {
   List<HeroData> list = [];
-  final doc = parse(html);
-  final heros = doc.getElementsByClassName("herolist clearfix").first;
-  for (var item in heros.children) {
-    final hero = _getHero(item);
-    list.add(hero);
+  final heros = jsonDecode(json) as List<dynamic>;
+  for (var i=heros.length-1; i>-1; i-- ) {
+    final item = heros[i];
+    list.add(HeroData(
+      href: "//game.gtimg.cn/images/yxzj/img201606/heroimg/${item['ename']}/${item['ename']}.jpg",
+      name: item['cname'],
+      number: item['ename'].toString(),
+      infoHref: "herodetail/${item['ename']}.shtml",
+      payType: item['pay_type'],
+      heroType: item['hero_type'],
+      newType: item['new_type'],
+      heroType2: item['hero_type2']
+    ));
   }
   print('main解析完毕');
   return list;
-}
-//解析单个英雄
-HeroData _getHero(Element item) {
-  final href = item.getElementsByTagName('img').first.attributes['src'];
-  final name = item.getElementsByTagName('a').first.text;
-  final infoHref = item.getElementsByTagName('a').first.attributes['href'];
-  return HeroData(
-    href: href,
-    name: name,
-    number: infoHref.substring(11, 14),
-    infoHref: infoHref
-  );
 }
 
 
@@ -129,46 +128,29 @@ List<String> _parseRecommend(Document doc) {
 //获取物品页面
 Future<List<ArticleData>> getArticle() async {
   try {
-    Response response = await dio.get(MainUrl+'item.shtml');
-    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('https://pvp.qq.com/web201605/js/item.json');
+    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('${MainUrl}${ItemList}');
     print('获取到article结果，开始解析');
-    final html = await gbk.decode(response.data);
-    return await _parseArticles(html, detailJson.toString());
+    return await _parseArticles(detailJson.toString());
   } catch (e) {
     print('article发生了错误: '+e.toString());
   }
 }
-List<ArticleData> _parseArticles(String html, String json) {
+List<ArticleData> _parseArticles(String json) {
   List<ArticleData> list = [];
-  final doc = parse(html);
-  final items = doc.getElementsByClassName('clearfix herolist').first;
   final itemDetails = jsonDecode(json);
-  Map<String, dynamic> map = {};
   for (final item in itemDetails) {
-    map[item['item_id'].toString()] = item;
-  }
-  for (final item in items.children) {
-    list.add(_parseArticle(item, map));
+    list.add(ArticleData(
+      href: "//game.gtimg.cn/images/yxzj/img201606/itemimg/${item['item_id']}.jpg",
+      name: item['item_name'],
+      ID: item['item_id'].toString(),
+      sellPrice: item['total_price'].toString(),
+      buyPrice: item['total_price'].toString(),
+      desc1: item['des1'],
+      desc2: item['des2']
+    ));
   }
   return list;
 }
-ArticleData _parseArticle(Element item, Map<String, dynamic> map) {
-  final href = item.children[0].children[0].attributes['src'];
-  final name = item.children[0].text;
-  final ID = item.children[0].attributes['data-href'].split('.').first;
-  final data = map[ID];
-  return ArticleData(
-    href: href,
-    name: name,
-    ID: ID,
-    type: data['item_type'].toString(),
-    sellPrice: data['price'].toString(),
-    buyPrice: data['total_price'].toString(),
-    desc1: data['des1'].toString(),
-    desc2: data['des2']==null?'':data['des2']
-  );
-}
-
 
 
 //获得视频列表
@@ -209,36 +191,24 @@ List<HeroVideo> _parseVideoHTML(String html) {
 //获得召唤师技能
 Future<List<CommonSkill>> getCommonSkill() async {
   try {
-    Response response = await dio.get(MainUrl+'summoner.shtml');
+    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('${MainUrl}${SummonerList}');
     print('获取到skill结果，开始解析');
-    final html = await gbk.decode(response.data);
-    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get('https://pvp.qq.com/web201605/js/summoner.json');
-    return await _parseCommonHtml(html, detailJson.toString());
+    return await _parseCommonHtml(detailJson.toString());
   } catch (e) {
     print('skill发生了错误: '+e.toString());
   }
 }
-List<CommonSkill> _parseCommonHtml(String html, String json) {
-  final doc = parse(html);
-  final skills = doc.getElementsByClassName("imgtextlist spell-list").first;
+List<CommonSkill> _parseCommonHtml(String json) {
   List<CommonSkill> result = [];
   final details = jsonDecode(json);
-  Map<String, dynamic> map = {};
   for (final item in details) {
-    map[item['summoner_id'].toString()] = item;
-  }
-  for (final item in skills.children) {
-    String number = item.attributes['id'];
-    String name = item.children[1].text;
-    String href = item.children[0].attributes['src'];
-    final detail = map[number];
     result.add(CommonSkill(
-      name: name,
-      href: href,
-      ID: number,
-      rank: detail['summoner_rank'].toString(),
-      description: detail['summoner_description'].toString(),
-      showImageHref: "//game.gtimg.cn/images/yxzj/img201606/summoner/$number-big.jpg"
+      name: item['summoner_name'],
+      href: "//game.gtimg.cn/images/yxzj/img201606/summoner/${item['summoner_id']}.jpg",
+      ID: item['summoner_id'].toString(),
+      rank: item['summoner_rank'],
+      description: item['summoner_description'],
+      showImageHref: "//game.gtimg.cn/images/yxzj/img201606/summoner/${item['summoner_id']}-big.jpg"
     ));
   }
   return result;
