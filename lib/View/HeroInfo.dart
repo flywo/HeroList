@@ -307,86 +307,88 @@ class _HeroInfoState extends State<HeroInfo> {
         }),
         title: Text(widget.hero.name, style: const TextStyle(color: Colors.white),),
       ),
-      body: ListView(
-        children: <Widget>[
-          SizedBox(
-            width: width,
-            height: width*3/4,
-            child: _buildSkinStack(width),
-          ),
-          SizedBox(
-            width: width,
-            height: 90,
-            child: ListView.builder(
-              itemExtent: 90,
-              itemCount: widget.hero.skills==null?0:widget.hero.skills.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return _getSkillItem(index, 90);
-              },
+      body: Scrollbar(
+        child: ListView(
+          children: <Widget>[
+            SizedBox(
+              width: width,
+              height: width*3/4,
+              child: _buildSkinStack(width),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  widget.hero.skills==null?'':widget.hero.skills[_skillSelected].name,
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 20
-                  ),
-                ),
-                Text(
-                  widget.hero.skills==null?'':('  ${widget.hero.skills[_skillSelected].cooling}  ${widget.hero.skills[_skillSelected].expend}'),
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 12
-                  ),
-                ),
-              ],
+            SizedBox(
+              width: width,
+              height: 90,
+              child: ListView.builder(
+                itemExtent: 90,
+                itemCount: widget.hero.skills==null?0:widget.hero.skills.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  return _getSkillItem(index, 90);
+                },
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.all(10),
-            child: Text(
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    widget.hero.skills==null?'':widget.hero.skills[_skillSelected].name,
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 20
+                    ),
+                  ),
+                  Text(
+                    widget.hero.skills==null?'':('  ${widget.hero.skills[_skillSelected].cooling}  ${widget.hero.skills[_skillSelected].expend}'),
+                    style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: 12
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
+              child: Text(
                 widget.hero.skills==null?'':widget.hero.skills[_skillSelected].desc,
                 style: const TextStyle(
-                  color: Colors.white
+                    color: Colors.white
                 ),
-            ),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(
-                const Radius.circular(5),
               ),
-              color: Theme.of(context).primaryColor,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(5),
+                ),
+                color: Theme.of(context).primaryColor,
+              ),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: _getRecommend(),
-          ),
-          GestureDetector(
-            onTap: () {
-              Application.router.navigateTo(context,
-                  Uri.encodeFull('/hero_info/hero_video?heroIndex=${AppComponent.heros.indexOf(widget.hero)}'),
-                  transition: TransitionType.native);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text('想学点技术？点击这里查看视频教学。',
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    decoration: TextDecoration.underline,
-                    decorationStyle: TextDecorationStyle.solid
-                ),),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: _getRecommend(),
             ),
-          )
-        ],
+            GestureDetector(
+              onTap: () {
+                Application.router.navigateTo(context,
+                    Uri.encodeFull('/hero_info/hero_video?heroIndex=${AppComponent.heros.indexOf(widget.hero)}'),
+                    transition: TransitionType.native);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text('想学点技术？点击这里查看视频教学。',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      decoration: TextDecoration.underline,
+                      decorationStyle: TextDecorationStyle.solid
+                  ),),
+              ),
+            )
+          ],
+        ),
       )
     );
   }

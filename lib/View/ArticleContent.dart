@@ -146,18 +146,20 @@ class _ArticleContentState extends State<ArticleContent> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width-40,
                   height: 70,
-                  child: ListView(
-                    itemExtent: 60,
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      _choiceItem(0, const Text('全部')),
-                      _choiceItem(1, const Text('攻击')),
-                      _choiceItem(2, const Text('法术')),
-                      _choiceItem(3, const Text('防御')),
-                      _choiceItem(4, const Text('移动')),
-                      _choiceItem(5, const Text('打野')),
-                      _choiceItem(7, const Text('辅助')),
-                    ],
+                  child: Scrollbar(
+                    child: ListView(
+                      itemExtent: 60,
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        _choiceItem(0, const Text('全部')),
+                        _choiceItem(1, const Text('攻击')),
+                        _choiceItem(2, const Text('法术')),
+                        _choiceItem(3, const Text('防御')),
+                        _choiceItem(4, const Text('移动')),
+                        _choiceItem(5, const Text('打野')),
+                        _choiceItem(7, const Text('辅助')),
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -188,17 +190,19 @@ class _ArticleContentState extends State<ArticleContent> {
       children: <Widget>[
         _buildChoiceView(),
         Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.all(5),
-            itemCount: _articleList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _getItem(width, index, _articleList[index]);
-            },
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: aspect
+          child: Scrollbar(
+            child: GridView.builder(
+              padding: const EdgeInsets.all(5),
+              itemCount: _articleList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _getItem(width, index, _articleList[index]);
+              },
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 5,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: aspect
+              ),
             ),
           ),
         ),

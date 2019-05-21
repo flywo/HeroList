@@ -128,13 +128,15 @@ class _HeroVideoState extends State<HeroVideo> {
             controller: _chewieController,
           ),
           Expanded(
-            child: widget.hero.videos==null? loading() : ListView.builder(
-              itemExtent: 100,
-              padding: const EdgeInsets.all(5),
-              itemCount: widget.hero.videos==null?0:widget.hero.videos.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _getVideoItem(index);
-              },
+            child: widget.hero.videos==null? loading() : Scrollbar(
+              child: ListView.builder(
+                itemExtent: 100,
+                padding: const EdgeInsets.all(5),
+                itemCount: widget.hero.videos==null?0:widget.hero.videos.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _getVideoItem(index);
+                },
+              ),
             ),
           )
         ],

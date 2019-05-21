@@ -202,17 +202,19 @@ class _HomeContentState extends State<HomeContent> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width-60,
                   height: 70,
-                  child: ListView(
-                    itemExtent: 60,
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      _choiceItem(3, const Text('坦克')),
-                      _choiceItem(1, const Text('战士')),
-                      _choiceItem(4, const Text('刺客')),
-                      _choiceItem(2, const Text('法师')),
-                      _choiceItem(5, const Text('射手')),
-                      _choiceItem(6, const Text('辅助')),
-                    ],
+                  child: Scrollbar(
+                    child: ListView(
+                      itemExtent: 60,
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        _choiceItem(3, const Text('坦克')),
+                        _choiceItem(1, const Text('战士')),
+                        _choiceItem(4, const Text('刺客')),
+                        _choiceItem(2, const Text('法师')),
+                        _choiceItem(5, const Text('射手')),
+                        _choiceItem(6, const Text('辅助')),
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -231,17 +233,19 @@ class _HomeContentState extends State<HomeContent> {
       children: <Widget>[
         _buildChoiceView(),
         Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
-            itemCount: _heros.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _getItem(width, _heros[index]);
-            },
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: aspect
+          child: Scrollbar(
+            child: GridView.builder(
+              padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+              itemCount: _heros.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _getItem(width, _heros[index]);
+              },
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  childAspectRatio: aspect
+              ),
             ),
           ),
         )
