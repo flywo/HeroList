@@ -28,6 +28,9 @@
 ### 召唤师技能
 ![image](https://github.com/flywo/HeroList/blob/master/common.png)
 
+### 铭文
+![image](https://github.com/flywo/HeroList/blob/master/ming.png)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
