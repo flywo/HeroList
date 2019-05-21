@@ -18,12 +18,23 @@ class _AppHomeState extends State<AppHome> {
 //  var _itemWidth = (GlobalKey().currentContext.size.width - 40)/3;
 
   int _currentTabbarIndex = 0;
+  bool _homeScreen = false;
+  int _homeTypeLastSelected = 0;
 
   Widget _getCurrentContent() {
     Widget result;
     switch (_currentTabbarIndex) {
       case 0:
-        result = HomeContent();
+        result = HomeContent(
+          openScreen: _homeScreen,
+          lastSelected: _homeTypeLastSelected,
+          choice: (value) {
+            _homeTypeLastSelected = value;
+            setState(() {
+              _homeScreen = false;
+            });
+          },
+        );
         break;
       case 1:
         result = ArticleContent();
@@ -52,18 +63,19 @@ class _AppHomeState extends State<AppHome> {
   }
 
   List<Widget> _showScreen() {
-    if (_currentTabbarIndex==2) {
+    if (_currentTabbarIndex != 0) {
       return [];
-    } else {
-      return [
-        IconButton(
-          icon: const Icon(Icons.settings, color: Colors.white,),
-          onPressed: () {
-
-          },
-        ),
-      ];
     }
+    return [
+      MaterialButton(
+        child: Text('筛选', style: TextStyle(color: Colors.white),),
+        onPressed: () {
+          setState(() {
+            _homeScreen = !_homeScreen;
+          });
+        },
+      ),
+    ];
   }
 
   @override

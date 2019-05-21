@@ -1,9 +1,4 @@
 
-enum PlayType {
-  Free,//免费
-  New,//新手推荐
-  Normal//普通英雄
-}
 
 enum HeroType {
   All,//所有
@@ -12,7 +7,9 @@ enum HeroType {
   Assassin,//刺客
   Master,//法师
   Shooter,//射手
-  Assist//辅助
+  Assist,//辅助
+  Free,//免费
+  New,//新手推荐
 }
 
 

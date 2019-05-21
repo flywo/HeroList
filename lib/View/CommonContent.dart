@@ -54,7 +54,7 @@ class _CommonContentState extends State<CommonContent> {
               fit: BoxFit.fill,
               imageUrl: 'https:${_skills[index].href}',
               placeholder: (BuildContext context, String url) {
-                return const CircularProgressIndicator();
+                return const Icon(Icons.file_download, color: Colors.orange,);
               },
               errorWidget: (BuildContext context, String url, Object error) {
                 return const Icon(Icons.error_outline);
@@ -100,7 +100,7 @@ class _CommonContentState extends State<CommonContent> {
             fit: BoxFit.fill,
             imageUrl: 'https:${_skills[_selected].showImageHref}',
             placeholder: (BuildContext context, String url) {
-              return const CircularProgressIndicator();
+              return const Icon(Icons.file_download, color: Colors.orange,);
             },
             errorWidget: (BuildContext context, String url, Object error) {
               return const Icon(Icons.error_outline);

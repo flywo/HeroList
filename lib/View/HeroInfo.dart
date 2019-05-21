@@ -46,11 +46,11 @@ class _HeroInfoState extends State<HeroInfo> {
           fit: BoxFit.fill,
           imageUrl: 'https:${widget.hero.skills[index].image}',
           placeholder: (BuildContext context, String url) {
-            return const CircularProgressIndicator();
+            return const Icon(Icons.file_download, color: Colors.orange,);
           },
           errorWidget: (BuildContext context, String url, Object error) {
             if (widget.hero.skills == null) {
-              return const CircularProgressIndicator();
+              return const Icon(Icons.file_download, color: Colors.orange,);
             }
             return const Icon(Icons.error_outline);
           },
@@ -79,11 +79,11 @@ class _HeroInfoState extends State<HeroInfo> {
             fit: BoxFit.fill,
             imageUrl: 'https:${widget.hero.skins[index].smallHref}',
             placeholder: (BuildContext context, String url) {
-              return const CircularProgressIndicator();
+              return const Icon(Icons.file_download, color: Colors.orange,);
             },
             errorWidget: (BuildContext context, String url, Object error) {
               if (widget.hero.skins == null) {
-                return const CircularProgressIndicator();
+                return const Icon(Icons.file_download, color: Colors.orange,);
               }
               return const Icon(Icons.error_outline);
             },
@@ -121,6 +121,15 @@ class _HeroInfoState extends State<HeroInfo> {
             height: width*3/4,
             fit: BoxFit.cover,
             imageUrl: 'https:${widget.hero.skins[_skinSelected].href}',
+            placeholder: (BuildContext context, String url) {
+              return const Icon(Icons.file_download, color: Colors.orange,);
+            },
+            errorWidget: (BuildContext context, String url, Object error) {
+              if (widget.hero.skins == null) {
+                return const Icon(Icons.file_download, color: Colors.orange,);
+              }
+              return const Icon(Icons.error_outline);
+            },
           ),
           SizedBox(
             width: width,
@@ -257,11 +266,11 @@ class _HeroInfoState extends State<HeroInfo> {
           fit: BoxFit.fill,
           imageUrl: 'https:${article.href}',
           placeholder: (BuildContext context, String url) {
-            return const CircularProgressIndicator();
+            return const Icon(Icons.file_download, color: Colors.orange,);
           },
           errorWidget: (BuildContext context, String url, Object error) {
             if (widget.hero.skills == null) {
-              return const CircularProgressIndicator();
+              return const Icon(Icons.file_download, color: Colors.orange,);
             }
             return const Icon(Icons.error_outline);
           },

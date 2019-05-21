@@ -50,7 +50,7 @@ class _ArticleContentState extends State<ArticleContent> {
               fit: BoxFit.fill,
               imageUrl: 'https:${article.href}',
               placeholder: (BuildContext context, String url) {
-                return const CircularProgressIndicator();
+                return const Icon(Icons.file_download, color: Colors.orange,);
               },
               errorWidget: (BuildContext context, String url, Object error) {
                 return const Icon(Icons.error_outline);

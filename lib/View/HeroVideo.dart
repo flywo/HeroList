@@ -37,11 +37,11 @@ class _HeroVideoState extends State<HeroVideo> {
               fit: BoxFit.fill,
               imageUrl: 'https:${widget.hero.videos[index].imgHref}',
               placeholder: (BuildContext context, String url) {
-                return const CircularProgressIndicator();
+                return const Icon(Icons.file_download, color: Colors.orange,);
               },
               errorWidget: (BuildContext context, String url, Object error) {
                 if (widget.hero.skills == null) {
-                  return const CircularProgressIndicator();
+                  return const Icon(Icons.file_download, color: Colors.orange,);
                 }
                 return const Icon(Icons.error_outline);
               },

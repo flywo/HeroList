@@ -8,10 +8,10 @@ import '../Model/ArticleData.dart';
 import 'dart:convert';
 
 typedef void ReloadDataHandle(List<HeroSkill> skills, List<HeroSkin> skins, List<String> recommond);
-final MainUrl = 'https://pvp.qq.com/web201605/';
-final HeroList = 'js/herolist.json';
-final SummonerList = 'js/summoner.json';
-final ItemList = 'js/item.json';
+const MainUrl = 'https://pvp.qq.com/web201605/';
+const HeroList = 'js/herolist.json';
+const SummonerList = 'js/summoner.json';
+const ItemList = 'js/item.json';
 
 final dio = Dio(
     BaseOptions(
