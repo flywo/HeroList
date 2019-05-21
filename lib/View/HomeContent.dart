@@ -9,10 +9,7 @@ import '../View/AppComponent.dart';
 typedef void TypeChoice(int type);
 
 class HomeContent extends StatefulWidget {
-  final bool openScreen;
-  final TypeChoice choice;
-  final int lastSelected;
-  HomeContent({Key key, @required this.openScreen, @required this.choice, @required this.lastSelected}) : super(key: key);
+  HomeContent({Key key}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _HomeContentState();
@@ -21,20 +18,24 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
 
-  List<HeroData> _heroList = [];
-  List<HeroData> _heroList0 = [];
-  List<HeroData> _heroList1 = [];
-  List<HeroData> _heroList2 = [];
-  List<HeroData> _heroList3 = [];
-  List<HeroData> _heroList4 = [];
-  List<HeroData> _heroList5 = [];
-  List<HeroData> _heroList6 = [];
-  List<HeroData> _heroList7 = [];
-  List<HeroData> _heroList8 = [];
+  int _selected = 0;
+  List<HeroData> _heros = [];
+  bool _showChoice = false;
 
   @override
   void initState() {
     super.initState();
+    if (AppComponent.heros == null) {
+      final future = getMain();
+      future.then((value) {
+        AppComponent.heros = value;
+        setState(() {
+          _heros = value;
+        });
+      });
+    } else {
+      _heros = AppComponent.heros;
+    }
     if (AppComponent.articles == null) {
       final future = getArticle();
       future.then((value) {
@@ -46,92 +47,38 @@ class _HomeContentState extends State<HomeContent> {
         AppComponent.mings = value;
       });
     }
-    if (AppComponent.heros != null) {
-      _heroList0 = AppComponent.heros;
-      tidyHeroList();
-      _heroList = getHeros(widget.lastSelected);
+  }
+
+  void tidyHeroList(int type) {
+    if (type==0) {
+      setState(() {
+        _heros = AppComponent.heros;
+      });
       return;
     }
-    final future = getMain();
-    future.then((value) {
-      _heroList0 = value;
-      AppComponent.heros = _heroList0;
-      tidyHeroList();
-      setState(() {
-        _heroList = _heroList0;
-      });
+    List<HeroData> result = [];
+    for (final item in AppComponent.heros) {
+      if (type>=10) {
+        if (item.payType==type) {
+          result.add(item);
+        }
+      } else {
+        if (item.heroType==type||item.heroType2==type) {
+          result.add(item);
+        }
+      }
+    }
+    setState(() {
+      _heros = result;
     });
   }
 
-  void tidyHeroList() {
-    for (final item in _heroList0) {
-      if (item.heroType==3||item.heroType2==3) {
-        _heroList1.add(item);
-      }
-      if (item.heroType==1||item.heroType2==1) {
-        _heroList2.add(item);
-      }
-      if (item.heroType==4||item.heroType2==4) {
-        _heroList3.add(item);
-      }
-      if (item.heroType==2||item.heroType2==2) {
-        _heroList4.add(item);
-      }
-      if (item.heroType==5||item.heroType2==5) {
-        _heroList5.add(item);
-      }
-      if (item.heroType==6||item.heroType2==6) {
-        _heroList6.add(item);
-      }
-      if (item.payType==10) {
-        _heroList7.add(item);
-      }
-      if (item.payType==11) {
-        _heroList8.add(item);
-      }
-    }
-  }
-
-  List<HeroData> getHeros(int type) {
-    List<HeroData> result = [];
-    switch (type) {
-      case 0:
-        result = _heroList0;
-        break;
-      case 1:
-        result = _heroList1;
-        break;
-      case 2:
-        result = _heroList2;
-        break;
-      case 3:
-        result = _heroList3;
-        break;
-      case 4:
-        result = _heroList4;
-        break;
-      case 5:
-        result = _heroList5;
-        break;
-      case 6:
-        result = _heroList6;
-        break;
-      case 7:
-        result = _heroList7;
-        break;
-      case 8:
-        result = _heroList8;
-        break;
-    }
-    return result;
-  }
-
-  Widget _getItem(double width, int index, HeroData hero) {
+  Widget _getItem(double width, HeroData hero) {
     return GestureDetector(
       onTap: () {
         Application.router.navigateTo(
             context,
-            Uri.encodeFull('/hero_info?heroIndex=${_heroList0.indexOf(getHeros(widget.lastSelected)[index])}'),
+            Uri.encodeFull('/hero_info?heroIndex=${AppComponent.heros.indexOf(hero)}'),
             transition: TransitionType.native
         );
       },
@@ -175,61 +122,137 @@ class _HomeContentState extends State<HomeContent> {
       ),
     );
   }
+  
+  Widget _choiceItem(int value, Text text) {
+    return Column(
+      children: <Widget>[
+        Radio<int>(
+          groupValue: _selected,
+          value: value,
+          onChanged: (value) {
+            tidyHeroList(value);
+            setState(() {
+              _selected = value;
+            });
+          },
+        ),
+        text
+      ],
+    );
+  }
+
+  Widget _buildChoiceView() {
+    if (!_showChoice) {
+      return SizedBox(
+        height: 40,
+        width: MediaQuery.of(context).size.width,
+        child: FlatButton(
+          child: const Text('点击筛选英雄', style: TextStyle(color: Colors.orange),),
+          onPressed: () {
+            setState(() {
+              _showChoice = true;
+            });
+          },
+        ),
+      );
+    }
+    return SizedBox(
+      height: 140,
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              SizedBox(
+                height: 70,
+                width: MediaQuery.of(context).size.width-40,
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(
+                      width: 50,
+                      child: const Text('综合', style: TextStyle(fontSize: 18, color: Colors.orange), textAlign: TextAlign.center,),
+                    ),
+                    _choiceItem(0, Text('全部')),
+                    _choiceItem(10, const Text('限免')),
+                    _choiceItem(11, const Text('新手')),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: 40,
+                height: 70,
+                child: IconButton(
+                  icon: Icon(Icons.keyboard_arrow_up, color: Colors.orange,),
+                  onPressed: () {
+                    setState(() {
+                      _showChoice = false;
+                    });
+                  },
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 70,
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              children: <Widget>[
+                SizedBox(
+                  width: 50,
+                  child: const Text('定位', style: TextStyle(fontSize: 18, color: Colors.orange), textAlign: TextAlign.center,),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width-60,
+                  height: 70,
+                  child: ListView(
+                    itemExtent: 60,
+                    scrollDirection: Axis.horizontal,
+                    children: <Widget>[
+                      _choiceItem(3, const Text('坦克')),
+                      _choiceItem(1, const Text('战士')),
+                      _choiceItem(4, const Text('刺客')),
+                      _choiceItem(2, const Text('法师')),
+                      _choiceItem(5, const Text('射手')),
+                      _choiceItem(6, const Text('辅助')),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
   Widget listView() {
     final width = (MediaQuery.of(context).size.width-40)/4;
     final aspect = width/(width+20);
 
-    RadioListTile<int> _buildTil(int value, Widget title) {
-      return RadioListTile<int>(
-        value: value,
-        title: title,
-        groupValue: widget.lastSelected,
-        onChanged: (value) {
-          widget.choice(value);
-          setState(() {
-            _heroList = getHeros(value);
-          });
-        },
-      );
-    }
-
-    if (widget.openScreen) {
-      return Column(
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              _buildTil(0, const Text('所有')),
-              _buildTil(1, const Text('坦克')),
-              _buildTil(2, const Text('战士')),
-              _buildTil(3, const Text('刺客')),
-              _buildTil(4, const Text('法师')),
-              _buildTil(5, const Text('射手')),
-              _buildTil(6, const Text('辅助')),
-              _buildTil(7, const Text('本周免费')),
-              _buildTil(8, const Text('新手推荐')),
-            ],
+    return Column(
+      children: <Widget>[
+        _buildChoiceView(),
+        Expanded(
+          child: GridView.builder(
+            padding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
+            itemCount: _heros.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _getItem(width, _heros[index]);
+            },
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: aspect
+            ),
           ),
-        ],
-      );
-    }
-    return GridView.builder(
-      padding: const EdgeInsets.all(5),
-      itemCount: _heroList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _getItem(width, index, _heroList[index]);
-      },
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: aspect
-      ),
+        )
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return _heroList.length==0? loading() : listView();
+    return _heros.length==0? loading() : listView();
   }
 }
