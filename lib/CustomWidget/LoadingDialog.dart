@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Model/ArticleData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../Model/MingData.dart';
 
 
 class LoadingDialog extends Dialog {
@@ -121,6 +122,80 @@ class ArticleDialog extends Dialog {
                 ),
                 Text("\n"+desc1, style: TextStyle(color: Theme.of(context).primaryColor),),
                 Text('\n'+desc2, style: TextStyle(color: Theme.of(context).primaryColor),),
+              ],
+            ),
+            shape: _defaultDialogShape,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class MingDialog extends Dialog {
+  final MingData ming;
+  MingDialog({Key key, @required this.ming}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Duration insetAnimationDuration = const Duration(milliseconds: 100);
+    Curve insetAnimationCurve = Curves.decelerate;
+
+    RoundedRectangleBorder _defaultDialogShape = RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(2.0)));
+
+    var desc = ming.des.replaceAllMapped(RegExp(r'<p>'), (Match match) => '');
+    desc = desc.replaceAllMapped(RegExp('</p>'), (Match match) => '\n');
+
+    return AnimatedPadding(
+      padding: MediaQuery.of(context).viewInsets + const EdgeInsets.symmetric(horizontal: 80.0, vertical: 24.0),
+      duration: insetAnimationDuration,
+      curve: insetAnimationCurve,
+      child: MediaQuery.removeViewInsets(
+        removeLeft: true,
+        removeTop: true,
+        removeRight: true,
+        removeBottom: true,
+        context: context,
+        child: Center(
+          child: Material(
+            elevation: 24.0,
+            color: Colors.black.withOpacity(0.95),
+            type: MaterialType.transparency,
+            child: new Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    CachedNetworkImage(
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.fill,
+                      imageUrl: 'https:${ming.href}',
+                      placeholder: (BuildContext context, String url) {
+                        return CircularProgressIndicator();
+                      },
+                      errorWidget: (BuildContext context, String url, Object error) {
+                        return Icon(Icons.error_outline);
+                      },
+                    ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("  铭文颜色："+ming.type, style: TextStyle(color: Theme.of(context).primaryColor),),
+                        Text("  铭文等级："+ming.grade, style: TextStyle(color: Theme.of(context).primaryColor),),
+                      ],
+                    )
+                  ],
+                ),
+                Text("\n"+desc, style: TextStyle(color: Theme.of(context).primaryColor),),
               ],
             ),
             shape: _defaultDialogShape,

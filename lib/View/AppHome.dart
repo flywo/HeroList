@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../View/HomeContent.dart';
 import '../View/ArticleContent.dart';
 import '../View/CommonContent.dart';
+import '../View/MingContent.dart';
 
 
 class AppHome extends StatefulWidget {
@@ -42,6 +43,9 @@ class _AppHomeState extends State<AppHome> {
       case 2:
         result = CommonContent();
         break;
+      case 3:
+        result = MingContent();
+        break;
     }
     return result;
   }
@@ -57,6 +61,9 @@ class _AppHomeState extends State<AppHome> {
         break;
       case 2:
         result = "召唤师技能";
+        break;
+      case 3:
+        result = '铭文列表';
         break;
     }
     return result;
@@ -87,6 +94,7 @@ class _AppHomeState extends State<AppHome> {
         ),
         body: _getCurrentContent(),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         unselectedItemColor: Colors.grey,
         selectedItemColor: Colors.white,
         backgroundColor: Theme.of(context).primaryColor,
@@ -107,6 +115,12 @@ class _AppHomeState extends State<AppHome> {
               icon: const Icon(Icons.insert_emoticon,),
               title: const Text(
                   '技能'
+              )
+          ),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.book,),
+              title: const Text(
+                  '铭文'
               )
           ),
         ],

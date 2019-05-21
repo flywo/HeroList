@@ -85,7 +85,7 @@ class _CommonContentState extends State<CommonContent> {
   }
 
   Widget buildContent() {
-    final width = (MediaQuery.of(context).size.width-40)/4;
+    final width = (MediaQuery.of(context).size.width-60)/5;
     final aspect = width/(width+20);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -149,7 +149,7 @@ class _CommonContentState extends State<CommonContent> {
               return _getItem(width, index);
             },
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
+                crossAxisCount: 5,
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,
                 childAspectRatio: aspect

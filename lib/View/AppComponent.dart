@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../Router/AppRouter.dart';
 import '../Model/ArticleData.dart';
 import '../Model/HeroData.dart';
+import '../Model/MingData.dart';
 
 
 class AppComponent extends StatefulWidget {
@@ -9,6 +10,7 @@ class AppComponent extends StatefulWidget {
   static List<ArticleData> articles;
   static List<HeroData> heros;
   static List<CommonSkill> commonSkills;
+  static List<MingData> mings;
 
   AppComponent({Key key}) : super(key: key);
   @override

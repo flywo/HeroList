@@ -41,6 +41,11 @@ class _HomeContentState extends State<HomeContent> {
         AppComponent.articles = value;
       });
     }
+    if (AppComponent.mings == null) {
+      getMings().then((value) {
+        AppComponent.mings = value;
+      });
+    }
     if (AppComponent.heros != null) {
       _heroList0 = AppComponent.heros;
       tidyHeroList();

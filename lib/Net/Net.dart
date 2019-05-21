@@ -6,12 +6,15 @@ import '../Model/HeroData.dart';
 import 'package:gbk2utf8/gbk2utf8.dart';
 import '../Model/ArticleData.dart';
 import 'dart:convert';
+import '../Model/MingData.dart';
+
 
 typedef void ReloadDataHandle(List<HeroSkill> skills, List<HeroSkin> skins, List<String> recommond);
 const MainUrl = 'https://pvp.qq.com/web201605/';
 const HeroList = 'js/herolist.json';
 const SummonerList = 'js/summoner.json';
 const ItemList = 'js/item.json';
+const MingList = 'js/ming.json';
 
 final dio = Dio(
     BaseOptions(
@@ -213,6 +216,34 @@ Future<List<CommonSkill>> _parseCommonHtml(String json) async {
       rank: item['summoner_rank'],
       description: item['summoner_description'],
       showImageHref: "//game.gtimg.cn/images/yxzj/img201606/summoner/${item['summoner_id']}-big.jpg"
+    ));
+  }
+  return result;
+}
+
+
+//获得符文列表
+Future<List<MingData>> getMings() async {
+  try {
+    Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get(MainUrl+MingList);
+    print('获取到skill结果，开始解析');
+    return await _parseMingHtml(detailJson.toString());
+  } catch (e) {
+    print('skill发生了错误: '+e.toString());
+    return null;
+  }
+}
+Future<List<MingData>> _parseMingHtml(String json) async {
+  List<MingData> result = [];
+  final details = jsonDecode(json);
+  for (final item in details) {
+    result.add(MingData(
+      mingID: item['ming_id'],
+      type: item['ming_type'],
+      grade: item['ming_grade'],
+      name: item['ming_name'],
+      des: item['ming_des'],
+      href: "//game.gtimg.cn/images/yxzj/img201606/mingwen/${item['ming_id']}.png"
     ));
   }
   return result;

@@ -1,63 +1,65 @@
 import 'package:flutter/material.dart';
-import '../Model/ArticleData.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import '../Net/Net.dart';
-import '../CustomWidget/LoadingDialog.dart';
+import '../Model/MingData.dart';
 import '../View/AppComponent.dart';
+import '../Net/Net.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../CustomWidget/LoadingDialog.dart';
 
 
-class ArticleContent extends StatefulWidget {
-  ArticleContent({Key key}) : super(key: key);
+class MingContent extends StatefulWidget {
+  MingContent({Key key}): super(key: key);
   @override
   State<StatefulWidget> createState() {
-    return _ArticleContentState();
+    return _MingContentState();
   }
 }
 
-class _ArticleContentState extends State<ArticleContent> {
+class _MingContentState extends State<MingContent> {
 
-  List<ArticleData> _articleList = [];
+  List<MingData> _mingList = [];
 
   @override
   void initState() {
     super.initState();
-    if (AppComponent.articles != null) {
-      _articleList = AppComponent.articles;
+    if (AppComponent.mings != null) {
+      _mingList = AppComponent.mings;
       return;
     }
-    final future = getArticle();
+    final future = getMings();
     future.then((value) {
       setState(() {
-        _articleList = value;
-        AppComponent.articles = value;
+        _mingList = value;
+        AppComponent.mings = value;
       });
     });
   }
 
-  Widget _getItem(double width, int index, ArticleData article) {
+  Widget _getItem(double width, int index, MingData ming) {
     return GestureDetector(
       onTap: () {
-        showDetail(_articleList[index]);
+        showDetail(_mingList[index]);
       },
       child: Column(
         children: <Widget>[
           SizedBox(
             width: width,
             height: width,
-            child: CachedNetworkImage(
-              width: width,
-              height: width,
-              fit: BoxFit.fill,
-              imageUrl: 'https:${article.href}',
-              placeholder: (BuildContext context, String url) {
-                return const Icon(Icons.file_download, color: Colors.orange,);
-              },
-              errorWidget: (BuildContext context, String url, Object error) {
-                return const Icon(Icons.error_outline);
-              },
+            child: Center(
+              child: CachedNetworkImage(
+                width: width*0.85,
+                height: width,
+                fit: BoxFit.fill,
+                imageUrl: 'https:${ming.href}',
+                placeholder: (BuildContext context, String url) {
+                  return const Icon(Icons.file_download, color: Colors.orange,);
+                },
+                errorWidget: (BuildContext context, String url, Object error) {
+                  return const Icon(Icons.error_outline);
+                },
+              ),
             ),
           ),
-          Text(article.name),
+          Text(ming.name),
         ],
       ),
     );
@@ -85,9 +87,9 @@ class _ArticleContentState extends State<ArticleContent> {
     final aspect = width/(width+20);
     return GridView.builder(
       padding: const EdgeInsets.all(5),
-      itemCount: _articleList.length,
+      itemCount: _mingList.length,
       itemBuilder: (BuildContext context, int index) {
-        return _getItem(width, index, _articleList[index]);
+        return _getItem(width, index, _mingList[index]);
       },
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 5,
@@ -98,16 +100,18 @@ class _ArticleContentState extends State<ArticleContent> {
     );
   }
 
-  void showDetail(ArticleData aritcle) {
+  void showDetail(MingData ming) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ArticleDialog(article: aritcle);
-      });
+        context: context,
+        builder: (BuildContext context) {
+          return MingDialog(
+            ming: ming,
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    return _articleList.length==0?loading():listView();
+    return _mingList.length==0?loading():listView();
   }
 }
