@@ -8,7 +8,7 @@ class ArticleData {
   //ID
   String ID;
   //类型
-  String type;
+  int type;
   //出售
   String sellPrice;
   //购买

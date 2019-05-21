@@ -151,7 +151,8 @@ Future<List<ArticleData>> _parseArticles(String json) async {
       sellPrice: item['total_price'].toString(),
       buyPrice: item['total_price'].toString(),
       desc1: item['des1'],
-      desc2: item['des2']
+      desc2: item['des2'],
+      type: item['item_type'],
     ));
   }
   return list;

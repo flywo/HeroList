@@ -49,8 +49,8 @@ class _HomeContentState extends State<HomeContent> {
     }
   }
 
-  void tidyHeroList(int type) {
-    if (type==0) {
+  void _tidyHeroList() {
+    if (_selected==0) {
       setState(() {
         _heros = AppComponent.heros;
       });
@@ -58,12 +58,12 @@ class _HomeContentState extends State<HomeContent> {
     }
     List<HeroData> result = [];
     for (final item in AppComponent.heros) {
-      if (type>=10) {
-        if (item.payType==type) {
+      if (_selected>=10) {
+        if (item.payType==_selected) {
           result.add(item);
         }
       } else {
-        if (item.heroType==type||item.heroType2==type) {
+        if (item.heroType==_selected||item.heroType2==_selected) {
           result.add(item);
         }
       }
@@ -130,10 +130,8 @@ class _HomeContentState extends State<HomeContent> {
           groupValue: _selected,
           value: value,
           onChanged: (value) {
-            tidyHeroList(value);
-            setState(() {
-              _selected = value;
-            });
+            _selected = value;
+            _tidyHeroList();
           },
         ),
         text
