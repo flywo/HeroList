@@ -43,8 +43,6 @@ class HeroData {
   List<HeroSkill> skills;
   //皮肤
   List<HeroSkin> skins;
-  //视频
-  List<HeroVideo> videos;
 
   HeroData({this.href, this.name, this.infoHref, this.number, this.payType, this.heroType, this.newType, this.heroType2});
 }
@@ -73,17 +71,6 @@ class HeroSkill {
   //描述
   String desc;
   HeroSkill({this.image, this.name, this.desc, this.cooling, this.expend});
-}
-
-//英雄视频
-class HeroVideo {
-  //视频链接
-  String href;
-  //预览图片
-  String imgHref;
-  //名称
-  String name;
-  HeroVideo({this.href, this.imgHref, this.name});
 }
 
 //召唤师技能

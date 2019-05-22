@@ -4,6 +4,7 @@ import 'package:chewie/chewie.dart';
 import '../Router/AppRouter.dart';
 import '../Model/HeroData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../View/AppComponent.dart';
 import '../Net/Net.dart';
 
 
@@ -21,46 +22,92 @@ class _HeroVideoState extends State<HeroVideo> {
   VideoPlayerController _videoPlayerController;
   ChewieController _chewieController;
 
+  List<dynamic> _videos = [];
+
   Widget _getVideoItem(int index) {
+
+    if (index.isOdd) {
+      return Divider(
+        height: 1,
+      );
+    } else {
+      index = (index/2).round();
+    }
+
+    final videoMap = _videos[index] as Map<String, dynamic>;
+    String href = videoMap['sIMG'];//预览图
+    String title = videoMap['sTitle'];//标题
+    String detail = videoMap['sDesc'];//描述
+//    String videoID = videoMap['iVideoId'];//id
+    String totalTime = videoMap['iTime'];//总时长
+    String totalPlay = videoMap['iTotalPlay'];//总播放
+    String createTime = videoMap['sIdxTime'];//创建时间
+
     return GestureDetector(
       onTap: () {
         setState(() {
-          play(widget.hero.videos[index].href, true);
+//          play(widget.hero.videos[index].href, true);
         });
       },
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            child: CachedNetworkImage(
-              width: 120,
-              height: 90,
-              fit: BoxFit.fill,
-              imageUrl: 'https:${widget.hero.videos[index].imgHref}',
-              placeholder: (BuildContext context, String url) {
-                return const Icon(Icons.file_download, color: Colors.orange,);
-              },
-              errorWidget: (BuildContext context, String url, Object error) {
-                if (widget.hero.skills == null) {
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: 100,
+        child: Row(
+          children: <Widget>[
+            SizedBox(
+              child: CachedNetworkImage(
+                width: 120,
+                height: 90,
+                fit: BoxFit.fill,
+                imageUrl: 'https:$href',
+                placeholder: (BuildContext context, String url) {
                   return const Icon(Icons.file_download, color: Colors.orange,);
-                }
-                return const Icon(Icons.error_outline);
-              },
+                },
+                errorWidget: (BuildContext context, String url, Object error) {
+                  if (widget.hero.skills == null) {
+                    return const Icon(Icons.file_download, color: Colors.orange,);
+                  }
+                  return const Icon(Icons.error_outline);
+                },
+              ),
             ),
-          ),
-          Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(left: 5),
-                child: Text(
-                  widget.hero.videos[index].name,
-                  maxLines: 4,
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Theme.of(context).primaryColor
+            Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        title,
+                        maxLines: 2,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).primaryColor
+                        ),
+                      ),
+                      Text(
+                        detail,
+                        maxLines: 2,
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey
+                        ),
+                      ),
+                      Text(
+                          '播放:$totalPlay次    时长:$totalTime    创建:$createTime',
+                          maxLines: 1,
+                          style: TextStyle(
+                              fontSize: 8,
+                              color: Theme.of(context).primaryColor
+                          )
+                      )
+                    ],
                   ),
-                ),
-              )
-          )
-        ],
+                )
+            )
+          ],
+        ),
       ),
     );
   }
@@ -68,12 +115,16 @@ class _HeroVideoState extends State<HeroVideo> {
   @override
   void initState() {
     super.initState();
-    if (widget.hero.videos==null) {
-      getVideos(widget.hero.name).then((value) {
+
+    if (AppComponent.videos == null) {
+      getNewVideos().then((value) {
+        AppComponent.videos = value;
         setState(() {
-          widget.hero.videos = value;
+          _videos = AppComponent.videos[widget.hero.name];
         });
       });
+    } else {
+      _videos = AppComponent.videos[widget.hero.name];
     }
     play('', false);
   }
@@ -128,11 +179,10 @@ class _HeroVideoState extends State<HeroVideo> {
             controller: _chewieController,
           ),
           Expanded(
-            child: widget.hero.videos==null? loading() : Scrollbar(
+            child: Scrollbar(
               child: ListView.builder(
-                itemExtent: 100,
                 padding: const EdgeInsets.all(5),
-                itemCount: widget.hero.videos==null?0:widget.hero.videos.length,
+                itemCount: _videos.length*2,
                 itemBuilder: (BuildContext context, int index) {
                   return _getVideoItem(index);
                 },

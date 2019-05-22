@@ -159,38 +159,39 @@ Future<List<ArticleData>> _parseArticles(String json) async {
 }
 
 
-//获得视频列表
-Future<List<HeroVideo>> getVideos(String heroNmae) async {
-  try {
-    Response response = await dio.get('http://so.iqiyi.com/so/q_王者荣耀$heroNmae?source=input&sr=1106277143580');
-    print('获取到video结果，开始解析');
-    final html = utf8.decode(response.data);
-    return await _parseVideoHTML(html);
-  } catch (e) {
-    print('video发生了错误: '+e.toString());
-    return null;
-  }
-}
-Future<List<HeroVideo>> _parseVideoHTML(String html) async {
-  List<HeroVideo> videos = [];
-  final list = parse(html).getElementsByClassName('mod_result_list').first.children;
-  for (final item in list) {
-    final name = item.attributes['data-widget-searchlist-tvname'];
-    if (name==null||name.length==0) {
-      continue;
-    }
-    final imgHref = item.children[0].children[0].attributes['src'];
-    //视频地址太难抓，算了，写个固定的。
-    final href = 'http://ips.ifeng.com/video19.ifeng.com/video09/2018/12/14/p6060124-102-009-123437.mp4';
-    var video = HeroVideo(
-      href: href,
-      imgHref: imgHref,
-      name: name
-    );
-    videos.add(video);
-  }
-  return videos;
-}
+////获得视频列表
+//Future<List<HeroVideo>> getVideos(String heroNmae) async {
+//  try {
+//    Response response = await dio.get('http://so.iqiyi.com/so/q_王者荣耀$heroNmae?source=input&sr=1106277143580');
+//    print('获取到video结果，开始解析');
+//    final html = utf8.decode(response.data);
+//    return await _parseVideoHTML(html);
+//  } catch (e) {
+//    print('video发生了错误: '+e.toString());
+//    return null;
+//  }
+//}
+//Future<List<HeroVideo>> _parseVideoHTML(String html) async {
+//  List<HeroVideo> videos = [];
+//  final list = parse(html).getElementsByClassName('mod_result_list').first.children;
+//  for (final item in list) {
+//    final name = item.attributes['data-widget-searchlist-tvname'];
+//    if (name==null||name.length==0) {
+//      continue;
+//    }
+//    final imgHref = item.children[0].children[0].attributes['src'];
+//    //视频地址太难抓，算了，写个固定的。
+////    final href = 'http://ips.ifeng.com/video19.ifeng.com/video09/2018/12/14/p6060124-102-009-123437.mp4';
+//    final href = 'http://110.185.115.29/om.tc.qq.com/AmllaYRlOEDLj1NIsmBNmfxzXKX3kjv0zuIYHbFHr-K0/uwMROfz2r5zBIaQXGdGnC2dfDma3J1MItM3912IN4IRQvkRM/b0872kk8z98.mp4?vkey=5047602243F243659E96927F33410884F45FDD999C706272E699AEF3E3E24D9EB6E3A512B12255EFD36A8C76F66CC699DD635EED3B92A937C0C819C3C225E9BCB5548DBE9A899AA1CCD2D746368586E97B063A4B854426D198507FA1A49964627ED26A27D7F701E0D2A7FE85029C6442EB07440E9A3ADDD5';
+//    var video = HeroVideo(
+//      href: href,
+//      imgHref: imgHref,
+//      name: name
+//    );
+//    videos.add(video);
+//  }
+//  return videos;
+//}
 
 
 
@@ -250,3 +251,20 @@ Future<List<MingData>> _parseMingHtml(String json) async {
   return result;
 }
 
+
+
+//获得所有新手视频信息
+Future<Map<String, dynamic>> getNewVideos() async {
+  try {
+    Response response = await dio.get('https://gicp.qq.com/wmp/data/js/v3/WMP_PVP_WEBSITE_NEWBEE_DATA_V1.js');
+    print('获取到video结果，开始解析');
+    return await _parseNewVideoHTML(utf8.decode(response.data));
+  } catch (e) {
+    print('video发生了错误: '+e.toString());
+    return null;
+  }
+}
+Future<Map<String, dynamic>> _parseNewVideoHTML(String html) async {
+  final result = jsonDecode(html.substring(26, html.length-1));
+  return result['video'] as Map<String, dynamic>;
+}

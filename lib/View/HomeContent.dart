@@ -25,6 +25,11 @@ class _HomeContentState extends State<HomeContent> {
   @override
   void initState() {
     super.initState();
+    if (AppComponent.videos == null) {
+      getNewVideos().then((value) {
+        AppComponent.videos = value;
+      });
+    }
     if (AppComponent.heros == null) {
       final future = getMain();
       future.then((value) {
