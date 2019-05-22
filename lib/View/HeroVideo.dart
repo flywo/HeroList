@@ -6,7 +6,7 @@ import '../Model/HeroData.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../View/AppComponent.dart';
 import '../Net/Net.dart';
-
+import '../CustomWidget/LoadingDialog.dart';
 
 class HeroVideo extends StatefulWidget {
   final HeroData hero;
@@ -38,15 +38,26 @@ class _HeroVideoState extends State<HeroVideo> {
     String href = videoMap['sIMG'];//预览图
     String title = videoMap['sTitle'];//标题
     String detail = videoMap['sDesc'];//描述
-//    String videoID = videoMap['iVideoId'];//id
+    String videoID = videoMap['iVideoId'];//id
     String totalTime = videoMap['iTime'];//总时长
     String totalPlay = videoMap['iTotalPlay'];//总播放
     String createTime = videoMap['sIdxTime'];//创建时间
 
+
     return GestureDetector(
       onTap: () {
-        setState(() {
-//          play(widget.hero.videos[index].href, true);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return LoadingDialog(
+                text: '获取视频中...',
+              );
+            });
+        queryVideoInfo(videoID).then((value) {
+          Navigator.pop(context);
+          setState(() {
+            play(value, true);
+          });
         });
       },
       child: SizedBox(
@@ -117,21 +128,30 @@ class _HeroVideoState extends State<HeroVideo> {
     super.initState();
 
     if (AppComponent.videos == null) {
-      getNewVideos().then((value) {
-        AppComponent.videos = value;
-        setState(() {
-          _videos = AppComponent.videos[widget.hero.name];
+      getNewVideos().then((value1) {
+        AppComponent.videos = value1;
+        getUpVideos().then((value2) {
+          AppComponent.videos2 = value2;
+          setState(() {
+            final videos3 = AppComponent.videos2[HeroData.mapVlue[widget.hero.number]]['jData'];
+            _videos = AppComponent.videos[widget.hero.name];
+            _videos.addAll(videos3);
+          });
         });
       });
     } else {
+      final videos2 = AppComponent.videos2[HeroData.mapVlue[widget.hero.number]]['jData'];
       _videos = AppComponent.videos[widget.hero.name];
+      _videos.addAll(videos2);
     }
-    play('', false);
   }
 
   void play(String url, bool autoPlay) {
     if (_chewieController!=null) {
       _chewieController.dispose();
+    }
+    if (_videoPlayerController!=null) {
+      _videoPlayerController.dispose();
     }
     _videoPlayerController = VideoPlayerController.network(
         url);
@@ -174,7 +194,19 @@ class _HeroVideoState extends State<HeroVideo> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
+        children: _videoPlayerController==null?<Widget>[
+          Expanded(
+            child: Scrollbar(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(5),
+                itemCount: _videos.length*2,
+                itemBuilder: (BuildContext context, int index) {
+                  return _getVideoItem(index);
+                },
+              ),
+            ),
+          )
+        ]:<Widget>[
           Chewie(
             controller: _chewieController,
           ),

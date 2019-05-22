@@ -12,6 +12,7 @@ class AppComponent extends StatefulWidget {
   static List<CommonSkill> commonSkills;
   static List<MingData> mings;
   static Map<String, dynamic> videos;
+  static Map<String, dynamic> videos2;
 
   AppComponent({Key key}) : super(key: key);
   @override

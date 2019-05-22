@@ -30,6 +30,11 @@ class _HomeContentState extends State<HomeContent> {
         AppComponent.videos = value;
       });
     }
+    if (AppComponent.videos2 == null) {
+      getUpVideos().then((value) {
+        AppComponent.videos2 = value;
+      });
+    }
     if (AppComponent.heros == null) {
       final future = getMain();
       future.then((value) {

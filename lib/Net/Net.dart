@@ -16,12 +16,6 @@ const SummonerList = 'js/summoner.json';
 const ItemList = 'js/item.json';
 const MingList = 'js/ming.json';
 
-final dio = Dio(
-    BaseOptions(
-        contentType: ContentType.html,
-        responseType: ResponseType.bytes
-    )
-);
 
 //获取英雄列表页
 Future<List<HeroData>> getMain() async {
@@ -60,7 +54,12 @@ Future<List<HeroData>> _parseHTML(String json) async {
 //获取英雄信息页
 void getHeroInfo(HeroData hero, ReloadDataHandle handle) async {
   try {
-    Response response = await dio.get(MainUrl+hero.infoHref);
+    Response response = await Dio(
+        BaseOptions(
+            contentType: ContentType.html,
+            responseType: ResponseType.bytes
+        )
+    ).get(MainUrl+hero.infoHref);
     print('获取到info结果，开始解析');
     final doc = parse(gbk.decode(response.data));
     handle(
@@ -159,43 +158,6 @@ Future<List<ArticleData>> _parseArticles(String json) async {
 }
 
 
-////获得视频列表
-//Future<List<HeroVideo>> getVideos(String heroNmae) async {
-//  try {
-//    Response response = await dio.get('http://so.iqiyi.com/so/q_王者荣耀$heroNmae?source=input&sr=1106277143580');
-//    print('获取到video结果，开始解析');
-//    final html = utf8.decode(response.data);
-//    return await _parseVideoHTML(html);
-//  } catch (e) {
-//    print('video发生了错误: '+e.toString());
-//    return null;
-//  }
-//}
-//Future<List<HeroVideo>> _parseVideoHTML(String html) async {
-//  List<HeroVideo> videos = [];
-//  final list = parse(html).getElementsByClassName('mod_result_list').first.children;
-//  for (final item in list) {
-//    final name = item.attributes['data-widget-searchlist-tvname'];
-//    if (name==null||name.length==0) {
-//      continue;
-//    }
-//    final imgHref = item.children[0].children[0].attributes['src'];
-//    //视频地址太难抓，算了，写个固定的。
-////    final href = 'http://ips.ifeng.com/video19.ifeng.com/video09/2018/12/14/p6060124-102-009-123437.mp4';
-//    final href = 'http://110.185.115.29/om.tc.qq.com/AmllaYRlOEDLj1NIsmBNmfxzXKX3kjv0zuIYHbFHr-K0/uwMROfz2r5zBIaQXGdGnC2dfDma3J1MItM3912IN4IRQvkRM/b0872kk8z98.mp4?vkey=5047602243F243659E96927F33410884F45FDD999C706272E699AEF3E3E24D9EB6E3A512B12255EFD36A8C76F66CC699DD635EED3B92A937C0C819C3C225E9BCB5548DBE9A899AA1CCD2D746368586E97B063A4B854426D198507FA1A49964627ED26A27D7F701E0D2A7FE85029C6442EB07440E9A3ADDD5';
-//    var video = HeroVideo(
-//      href: href,
-//      imgHref: imgHref,
-//      name: name
-//    );
-//    videos.add(video);
-//  }
-//  return videos;
-//}
-
-
-
-
 //获得召唤师技能
 Future<List<CommonSkill>> getCommonSkill() async {
   try {
@@ -256,15 +218,77 @@ Future<List<MingData>> _parseMingHtml(String json) async {
 //获得所有新手视频信息
 Future<Map<String, dynamic>> getNewVideos() async {
   try {
-    Response response = await dio.get('https://gicp.qq.com/wmp/data/js/v3/WMP_PVP_WEBSITE_NEWBEE_DATA_V1.js');
+    Response response = await Dio(
+        BaseOptions(
+            contentType: ContentType.html,
+            responseType: ResponseType.plain
+        )
+    ).get('https://gicp.qq.com/wmp/data/js/v3/WMP_PVP_WEBSITE_NEWBEE_DATA_V1.js');
     print('获取到video结果，开始解析');
-    return await _parseNewVideoHTML(utf8.decode(response.data));
+    return await _parseNewVideoHTML(response.toString());
   } catch (e) {
     print('video发生了错误: '+e.toString());
     return null;
   }
 }
 Future<Map<String, dynamic>> _parseNewVideoHTML(String html) async {
-  final result = jsonDecode(html.substring(26, html.length-1));
+  final re = RegExp(r'{.*}');
+  final result = jsonDecode(re.stringMatch(html));
   return result['video'] as Map<String, dynamic>;
+}
+Future<Map<String, dynamic>> getUpVideos() async {
+  try {
+    Response response = await Dio(
+        BaseOptions(
+            contentType: ContentType.html,
+            responseType: ResponseType.plain
+        )
+    ).get('https://gicp.qq.com/wmp/data/js/v3/WMP_PVP_WEBSITE_DATA_18_VIDEO_V3.js');
+    return _parseUpVideoHTML(response.toString());
+  } catch (e) {
+    print('video发生了错误: '+e.toString());
+    return null;
+  }
+}
+Future<Map<String, dynamic>> _parseUpVideoHTML(String html) async {
+  final re = RegExp(r'{.*}');
+  return jsonDecode(re.stringMatch(html)) as Map<String, dynamic>;
+}
+//查询视频信息
+Future<String> queryVideoInfo(String vID) async {
+  try {
+    Response response = await Dio(
+        BaseOptions(
+            contentType: ContentType.html,
+            responseType: ResponseType.plain)
+    ).post(
+        'https://apps.game.qq.com/wmp/v3.1/public/search.php',
+        queryParameters: {'source':'pvpweb_detail','id':vID,'p0':18},);
+    print('开始解析video');
+    return _getVID(response.toString());
+  } catch (e) {
+    print('解析video信息发生错误:${e.toString()}');
+  }
+}
+Future<String> _getVID(String str) async {
+  final re = RegExp(r'"sVID":"[0-9a-zA-Z]{11}"');
+  return await _getVideoUrl(re.stringMatch(str).substring(8, 19));
+}
+Future<String> _getVideoUrl(String vID) async {
+  Response response = await Dio(
+      BaseOptions(
+          contentType: ContentType.html,
+          responseType: ResponseType.plain)
+  ).post(
+    'https://h5vv.video.qq.com/getinfo',
+    queryParameters: {'vids':vID,'otype':'json','ehost':'https://pvp.qq.com','platform':11001,'sdtfrom':'v1010'},);
+  return _getVideoURL(response.toString(), vID);
+}
+String _getVideoURL(String response, String vID) {
+  final re = RegExp(r'{.*}');
+  final json = jsonDecode(re.stringMatch(response));
+  final url = json['vl']['vi'][0]['ul']['ui'][0]['url'];
+  final name = json['vl']['vi'][0]['fn'];
+  final key = json['vl']['vi'][0]['fvkey'];
+  return url+name+'?vkey='+key;
 }
