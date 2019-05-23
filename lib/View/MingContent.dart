@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../Model/MingData.dart';
 import '../View/AppComponent.dart';
 import '../Net/Net.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../CustomWidget/LoadingDialog.dart';
+import '../CustomWidget/CustomWidget.dart';
 
 
 class MingContent extends StatefulWidget {
@@ -48,21 +48,15 @@ class _MingContentState extends State<MingContent> {
             width: width,
             height: width,
             child: Center(
-              child: CachedNetworkImage(
+              child: CustomWidget.buildNetImage(
                 width: width*0.85,
                 height: width,
                 fit: BoxFit.fill,
-                imageUrl: 'https:${ming.href}',
-                placeholder: (BuildContext context, String url) {
-                  return const Icon(Icons.file_download, color: Colors.orange,);
-                },
-                errorWidget: (BuildContext context, String url, Object error) {
-                  return const Icon(Icons.error_outline);
-                },
+                urlStr: 'https:${ming.href}'
               ),
             ),
           ),
-          Text('${ming.name}(${_changeIntToHan(ming.grade)}级)', style: TextStyle(fontSize: 12),),
+          Text('${ming.name}(${_changeIntToHan(ming.grade)}级)', style: const TextStyle(fontSize: 12),),
         ],
       ),
     );
@@ -88,23 +82,6 @@ class _MingContentState extends State<MingContent> {
         break;
     }
     return result;
-  }
-
-  Widget loading() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const CircularProgressIndicator(),
-          Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: const Text('加载中...'),
-          ),
-        ],
-      ),
-    );
   }
 
   void _tidyMingList() {
@@ -299,6 +276,6 @@ class _MingContentState extends State<MingContent> {
 
   @override
   Widget build(BuildContext context) {
-    return _mingList.length==0?loading():listView();
+    return _mingList.length==0?CustomWidget.buildLoadingView():listView();
   }
 }

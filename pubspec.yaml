@@ -31,6 +31,8 @@ dependencies:
   video_player: ^0.10.1
   chewie: ^0.9.7
   webview_flutter: ^0.3.7+1
+  archive: ^2.0.9
+  sqflite: ^1.1.5
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +54,9 @@ flutter:
   # assets:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
+
+  assets:
+    - assets/wzry_data.zip
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

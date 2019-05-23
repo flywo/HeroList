@@ -3,10 +3,11 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import '../Router/AppRouter.dart';
 import '../Model/HeroData.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../View/AppComponent.dart';
 import '../Net/Net.dart';
 import '../CustomWidget/LoadingDialog.dart';
+import '../CustomWidget/CustomWidget.dart';
+
 
 class HeroVideo extends StatefulWidget {
   final HeroData hero;
@@ -66,20 +67,11 @@ class _HeroVideoState extends State<HeroVideo> {
         child: Row(
           children: <Widget>[
             SizedBox(
-              child: CachedNetworkImage(
+              child: CustomWidget.buildNetImage(
                 width: 120,
                 height: 90,
                 fit: BoxFit.fill,
-                imageUrl: 'https:$href',
-                placeholder: (BuildContext context, String url) {
-                  return const Icon(Icons.file_download, color: Colors.orange,);
-                },
-                errorWidget: (BuildContext context, String url, Object error) {
-                  if (widget.hero.skills == null) {
-                    return const Icon(Icons.file_download, color: Colors.orange,);
-                  }
-                  return const Icon(Icons.error_outline);
-                },
+                urlStr: 'https:$href',
               ),
             ),
             Expanded(
@@ -161,23 +153,6 @@ class _HeroVideoState extends State<HeroVideo> {
         allowFullScreen: false,
         showControls: true,
         autoPlay: autoPlay
-    );
-  }
-
-  Widget loading() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const CircularProgressIndicator(),
-          const Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: const Text('加载中...'),
-          ),
-        ],
-      ),
     );
   }
 

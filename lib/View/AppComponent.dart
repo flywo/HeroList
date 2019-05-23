@@ -28,7 +28,7 @@ class _AppComponetState extends State<AppComponent> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '王者荣耀',
+      title: '王者手册',
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),

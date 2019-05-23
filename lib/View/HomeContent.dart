@@ -3,9 +3,10 @@ import '../Model/HeroData.dart';
 import '../Net/Net.dart';
 import '../Router/AppRouter.dart';
 import 'package:fluro/fluro.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../View/AppComponent.dart';
-import 'package:path_provider/path_provider.dart';
+import '../CustomWidget/CustomWidget.dart';
+import '../File/FileManager.dart';
+
 
 typedef void TypeChoice(int type);
 
@@ -26,9 +27,7 @@ class _HomeContentState extends State<HomeContent> {
   @override
   void initState() {
     super.initState();
-    getApplicationDocumentsDirectory().then((value) {
-      print(value);
-    });
+    FileManager.moveAssetToStored();
     if (AppComponent.videos == null) {
       getNewVideos().then((value) {
         AppComponent.videos = value;
@@ -101,37 +100,14 @@ class _HomeContentState extends State<HomeContent> {
           SizedBox(
             width: width,
             height: width,
-            child: CachedNetworkImage(
+            child: CustomWidget.buildNetImage(
               width: width,
               height: width,
               fit: BoxFit.fill,
-              imageUrl: 'https:${hero.href}',
-              placeholder: (BuildContext context, String url) {
-                return const Icon(Icons.file_download, color: Colors.orange,);
-              },
-              errorWidget: (BuildContext context, String url, Object error) {
-                return const Icon(Icons.error_outline);
-              },
+              urlStr: 'https:${hero.href}'
             ),
           ),
-          Text(hero.name, style: TextStyle(fontSize: 12),),
-        ],
-      ),
-    );
-  }
-
-  Widget loading() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const CircularProgressIndicator(),
-          const Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: const Text('加载中...'),
-          ),
+          Text(hero.name, style: const TextStyle(fontSize: 12),),
         ],
       ),
     );
@@ -269,6 +245,6 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    return _heros.length==0? loading() : listView();
+    return _heros.length==0? CustomWidget.buildLoadingView() : listView();
   }
 }

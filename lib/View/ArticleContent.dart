@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../Model/ArticleData.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../Net/Net.dart';
 import '../CustomWidget/LoadingDialog.dart';
 import '../View/AppComponent.dart';
+import '../CustomWidget/CustomWidget.dart';
 
 
 class ArticleContent extends StatefulWidget {
@@ -46,41 +46,19 @@ class _ArticleContentState extends State<ArticleContent> {
           SizedBox(
             width: width,
             height: width,
-            child: CachedNetworkImage(
+            child: CustomWidget.buildNetImage(
               width: width,
               height: width,
               fit: BoxFit.fill,
-              imageUrl: 'https:${article.href}',
-              placeholder: (BuildContext context, String url) {
-                return const Icon(Icons.file_download, color: Colors.orange,);
-              },
-              errorWidget: (BuildContext context, String url, Object error) {
-                return const Icon(Icons.error_outline);
-              },
-            ),
+              urlStr: 'https:${article.href}',
+            )
           ),
-          Text(article.name, style: TextStyle(fontSize: 12),),
+          Text(article.name, style: const TextStyle(fontSize: 12),),
         ],
       ),
     );
   }
 
-  Widget loading() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const CircularProgressIndicator(),
-          Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: const Text('加载中...'),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _tidyArticleList() {
     if (_selected==0) {
@@ -220,6 +198,6 @@ class _ArticleContentState extends State<ArticleContent> {
 
   @override
   Widget build(BuildContext context) {
-    return _articleList.length==0?loading():listView();
+    return _articleList.length==0?CustomWidget.buildLoadingView():listView();
   }
 }

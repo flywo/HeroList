@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import '../Model/HeroData.dart';
 import '../Net/Net.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../Router/AppRouter.dart';
 import 'package:fluro/fluro.dart';
 import '../View/AppComponent.dart';
 import '../CustomWidget/LoadingDialog.dart';
 import '../Model/ArticleData.dart';
+import '../CustomWidget/CustomWidget.dart';
 
 
 class HeroInfo extends StatefulWidget {
@@ -42,18 +42,11 @@ class _HeroInfoState extends State<HeroInfo> {
           ),
           color: index==_skillSelected?Theme.of(context).primaryColor:null,
         ),
-        child: CachedNetworkImage(
+        child: CustomWidget.buildNetImage(
+          width: width,
+          height: width,
           fit: BoxFit.fill,
-          imageUrl: 'https:${widget.hero.skills[index].image}',
-          placeholder: (BuildContext context, String url) {
-            return const Icon(Icons.file_download, color: Colors.orange,);
-          },
-          errorWidget: (BuildContext context, String url, Object error) {
-            if (widget.hero.skills == null) {
-              return const Icon(Icons.file_download, color: Colors.orange,);
-            }
-            return const Icon(Icons.error_outline);
-          },
+          urlStr: 'https:${widget.hero.skills[index].image}',
         ),
       ),
     );
@@ -75,18 +68,11 @@ class _HeroInfoState extends State<HeroInfo> {
           padding: const EdgeInsets.all(2),
           margin: const EdgeInsets.all(5),
           color: index==_skinSelected?Colors.white:null,
-          child: CachedNetworkImage(
+          child: CustomWidget.buildNetImage(
+            width: width,
+            height: width,
             fit: BoxFit.fill,
-            imageUrl: 'https:${widget.hero.skins[index].smallHref}',
-            placeholder: (BuildContext context, String url) {
-              return const Icon(Icons.file_download, color: Colors.orange,);
-            },
-            errorWidget: (BuildContext context, String url, Object error) {
-              if (widget.hero.skins == null) {
-                return const Icon(Icons.file_download, color: Colors.orange,);
-              }
-              return const Icon(Icons.error_outline);
-            },
+            urlStr: 'https:${widget.hero.skins[index].smallHref}',
           ),
         ),
       ),
@@ -116,20 +102,11 @@ class _HeroInfoState extends State<HeroInfo> {
       return Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: <Widget>[
-          CachedNetworkImage(
+          CustomWidget.buildNetImage(
             width: width,
             height: width*3/4,
             fit: BoxFit.cover,
-            imageUrl: 'https:${widget.hero.skins[_skinSelected].href}',
-            placeholder: (BuildContext context, String url) {
-              return const Icon(Icons.file_download, color: Colors.orange,);
-            },
-            errorWidget: (BuildContext context, String url, Object error) {
-              if (widget.hero.skins == null) {
-                return const Icon(Icons.file_download, color: Colors.orange,);
-              }
-              return const Icon(Icons.error_outline);
-            },
+            urlStr: 'https:${widget.hero.skins[_skinSelected].href}',
           ),
           SizedBox(
             width: width,
@@ -260,20 +237,11 @@ class _HeroInfoState extends State<HeroInfo> {
       child: SizedBox(
         width: 100,
         height: 100,
-        child: CachedNetworkImage(
-          height: 100,
+        child: CustomWidget.buildNetImage(
           width: 100,
+          height: 100,
           fit: BoxFit.fill,
-          imageUrl: 'https:${article.href}',
-          placeholder: (BuildContext context, String url) {
-            return const Icon(Icons.file_download, color: Colors.orange,);
-          },
-          errorWidget: (BuildContext context, String url, Object error) {
-            if (widget.hero.skills == null) {
-              return const Icon(Icons.file_download, color: Colors.orange,);
-            }
-            return const Icon(Icons.error_outline);
-          },
+          urlStr: 'https:${article.href}',
         ),
       ),
     );
@@ -295,23 +263,6 @@ class _HeroInfoState extends State<HeroInfo> {
         });
       });
     }
-  }
-
-  Widget loading() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const CircularProgressIndicator(),
-          const Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: const Text('加载中...'),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget buildView() {
@@ -410,7 +361,7 @@ class _HeroInfoState extends State<HeroInfo> {
         }),
         title: Text(widget.hero.name, style: const TextStyle(color: Colors.white),),
       ),
-      body: widget.hero.skills==null?loading():buildView()
+      body: widget.hero.skills==null?CustomWidget.buildLoadingView():buildView()
     );
   }
 }

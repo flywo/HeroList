@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Model/ArticleData.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../Model/MingData.dart';
+import '../CustomWidget/CustomWidget.dart';
 
 
 class LoadingDialog extends Dialog {
@@ -97,17 +97,11 @@ class ArticleDialog extends Dialog {
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    CachedNetworkImage(
+                    CustomWidget.buildNetImage(
                       width: 50,
                       height: 50,
                       fit: BoxFit.fill,
-                      imageUrl: 'https:${article.href}',
-                      placeholder: (BuildContext context, String url) {
-                        return CircularProgressIndicator();
-                      },
-                      errorWidget: (BuildContext context, String url, Object error) {
-                        return Icon(Icons.error_outline);
-                      },
+                      urlStr: 'https:${article.href}'
                     ),
                     Column(
                       mainAxisSize: MainAxisSize.min,
@@ -172,17 +166,11 @@ class MingDialog extends Dialog {
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    CachedNetworkImage(
+                    CustomWidget.buildNetImage(
                       width: 50,
                       height: 50,
                       fit: BoxFit.fill,
-                      imageUrl: 'https:${ming.href}',
-                      placeholder: (BuildContext context, String url) {
-                        return CircularProgressIndicator();
-                      },
-                      errorWidget: (BuildContext context, String url, Object error) {
-                        return Icon(Icons.error_outline);
-                      },
+                      urlStr: 'https:${ming.href}',
                     ),
                     Column(
                       mainAxisSize: MainAxisSize.min,

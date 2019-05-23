@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../Model/HeroData.dart';
 import '../View/AppComponent.dart';
 import '../Net/Net.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import '../CustomWidget/CustomWidget.dart';
 
 
 class CommonContent extends StatefulWidget {
@@ -48,37 +48,14 @@ class _CommonContentState extends State<CommonContent> {
             height: width,
             color: _selected==index?Theme.of(context).primaryColor:Colors.white,
             padding: const EdgeInsets.all(2),
-            child: CachedNetworkImage(
+            child: CustomWidget.buildNetImage(
               width: width-4,
               height: width-4,
               fit: BoxFit.fill,
-              imageUrl: 'https:${_skills[index].href}',
-              placeholder: (BuildContext context, String url) {
-                return const Icon(Icons.file_download, color: Colors.orange,);
-              },
-              errorWidget: (BuildContext context, String url, Object error) {
-                return const Icon(Icons.error_outline);
-              },
-            ),
+              urlStr: 'https:${_skills[index].href}',
+            )
           ),
           Text(_skills[index].name, style: TextStyle(fontSize: 12),),
-        ],
-      ),
-    );
-  }
-
-  Widget loading() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const CircularProgressIndicator(),
-          const Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: const Text('加载中...'),
-          ),
         ],
       ),
     );
@@ -94,17 +71,11 @@ class _CommonContentState extends State<CommonContent> {
         SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width*0.6,
-          child: CachedNetworkImage(
+          child: CustomWidget.buildNetImage(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.width*0.6,
             fit: BoxFit.fill,
-            imageUrl: 'https:${_skills[_selected].showImageHref}',
-            placeholder: (BuildContext context, String url) {
-              return const Icon(Icons.file_download, color: Colors.orange,);
-            },
-            errorWidget: (BuildContext context, String url, Object error) {
-              return const Icon(Icons.error_outline);
-            },
+            urlStr: 'https:${_skills[_selected].showImageHref}',
           ),
         ),
         Padding(
@@ -162,7 +133,7 @@ class _CommonContentState extends State<CommonContent> {
 
   @override
   Widget build(BuildContext context) {
-    return _skills.length==0?loading():buildContent();
+    return _skills.length==0?CustomWidget.buildLoadingView():buildContent();
   }
 }
 
