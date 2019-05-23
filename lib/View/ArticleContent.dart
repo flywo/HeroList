@@ -59,7 +59,7 @@ class _ArticleContentState extends State<ArticleContent> {
               },
             ),
           ),
-          Text(article.name),
+          Text(article.name, style: TextStyle(fontSize: 12),),
         ],
       ),
     );

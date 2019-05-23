@@ -228,8 +228,12 @@ class _HeroVideoState extends State<HeroVideo> {
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
-    _chewieController.dispose();
+    if (_videoPlayerController!=null) {
+      _videoPlayerController.dispose();
+    }
+    if (_chewieController!=null) {
+      _chewieController.dispose();
+    }
     super.dispose();
   }
 }

@@ -265,9 +265,10 @@ Future<String> queryVideoInfo(String vID) async {
         'https://apps.game.qq.com/wmp/v3.1/public/search.php',
         queryParameters: {'source':'pvpweb_detail','id':vID,'p0':18},);
     print('开始解析video');
-    return _getVID(response.toString());
+    return await _getVID(response.toString());
   } catch (e) {
     print('解析video信息发生错误:${e.toString()}');
+    return null;
   }
 }
 Future<String> _getVID(String str) async {

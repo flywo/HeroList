@@ -61,7 +61,7 @@ class _CommonContentState extends State<CommonContent> {
               },
             ),
           ),
-          Text(_skills[index].name),
+          Text(_skills[index].name, style: TextStyle(fontSize: 12),),
         ],
       ),
     );

@@ -62,7 +62,7 @@ class _MingContentState extends State<MingContent> {
               ),
             ),
           ),
-          Text('${ming.name}(${_changeIntToHan(ming.grade)}级)'),
+          Text('${ming.name}(${_changeIntToHan(ming.grade)}级)', style: TextStyle(fontSize: 12),),
         ],
       ),
     );

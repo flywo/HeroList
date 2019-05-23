@@ -5,6 +5,7 @@ import '../Router/AppRouter.dart';
 import 'package:fluro/fluro.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../View/AppComponent.dart';
+import 'package:path_provider/path_provider.dart';
 
 typedef void TypeChoice(int type);
 
@@ -25,6 +26,9 @@ class _HomeContentState extends State<HomeContent> {
   @override
   void initState() {
     super.initState();
+    getApplicationDocumentsDirectory().then((value) {
+      print(value);
+    });
     if (AppComponent.videos == null) {
       getNewVideos().then((value) {
         AppComponent.videos = value;
@@ -110,7 +114,7 @@ class _HomeContentState extends State<HomeContent> {
               },
             ),
           ),
-          Text(hero.name),
+          Text(hero.name, style: TextStyle(fontSize: 12),),
         ],
       ),
     );
