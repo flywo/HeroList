@@ -6,7 +6,7 @@ class ArticleData {
   //名称
   String name;
   //ID
-  String ID;
+  String iD;
   //类型
   int type;
   //出售
@@ -19,7 +19,7 @@ class ArticleData {
   String desc2;
   ArticleData({this.href,
     this.name,
-    this.ID,
+    this.iD,
     this.type,
     this.sellPrice,
     this.buyPrice,

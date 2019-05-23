@@ -146,7 +146,7 @@ Future<List<ArticleData>> _parseArticles(String json) async {
     list.add(ArticleData(
       href: "//game.gtimg.cn/images/yxzj/img201606/itemimg/${item['item_id']}.jpg",
       name: item['item_name'],
-      ID: item['item_id'].toString(),
+      iD: item['item_id'].toString(),
       sellPrice: item['total_price'].toString(),
       buyPrice: item['total_price'].toString(),
       desc1: item['des1'],
@@ -176,7 +176,7 @@ Future<List<CommonSkill>> _parseCommonHtml(String json) async {
     result.add(CommonSkill(
       name: item['summoner_name'],
       href: "//game.gtimg.cn/images/yxzj/img201606/summoner/${item['summoner_id']}.jpg",
-      ID: item['summoner_id'].toString(),
+      iD: item['summoner_id'].toString(),
       rank: item['summoner_rank'],
       description: item['summoner_description'],
       showImageHref: "//game.gtimg.cn/images/yxzj/img201606/summoner/${item['summoner_id']}-big.jpg"

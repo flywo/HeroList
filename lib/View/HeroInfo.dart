@@ -229,7 +229,7 @@ class _HeroInfoState extends State<HeroInfo> {
     if (AppComponent.articles==null) {
       return null;
     }
-    final article = AppComponent.articles[AppComponent.articles.indexWhere((value) => value.ID==index)];
+    final article = AppComponent.articles[AppComponent.articles.indexWhere((value) => value.iD==index)];
     return GestureDetector(
       onTap: () {
         showDetail(article);

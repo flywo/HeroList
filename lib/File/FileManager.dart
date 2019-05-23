@@ -8,13 +8,17 @@ import 'package:sqflite/sqflite.dart';
 
 class FileManager {
 
-  static String DocPath;
+  static String docPath;
   static Map<String, String> _urlMap = {};
 
   //移动资源到存储
   static void moveAssetToStored() async {
+    if (_urlMap.length!=0) {
+      print('无需再次获取_urlMap');
+      return;
+    }
     getApplicationDocumentsDirectory().then((value) {
-      DocPath = value.path;
+      docPath = value.path;
       final file = File('${value.path}/assets.zip');
       if (!file.existsSync()) {
         print('移动数据到存储中');
@@ -32,23 +36,23 @@ class FileManager {
   }
   //解压资源
   static void _zipAssets() async {
-    final dic = Directory('${DocPath}/assets_data');
+    final dic = Directory('$docPath/assets_data');
     if (dic.existsSync()) {
       print('zip已解压');
       _initUrlMap();
     } else {
       dic.createSync();
-      List<int> bytes = File('${DocPath}/assets.zip').readAsBytesSync();
+      List<int> bytes = File('$docPath/assets.zip').readAsBytesSync();
       Archive archive = ZipDecoder().decodeBytes(bytes);
       for (ArchiveFile file in archive) {
         String filename = file.name;
         if (file.isFile) {
           List<int> data = file.content;
-          File('${DocPath}/assets_data/' + filename)
+          File('$docPath/assets_data/' + filename)
             ..createSync(recursive: true)
             ..writeAsBytesSync(data);
         } else {
-          Directory('${DocPath}/assets_data/' + filename)
+          Directory('$docPath/assets_data/' + filename)
             ..createSync(recursive: true);
         }
       }
@@ -58,8 +62,8 @@ class FileManager {
   }
   //初始化urlmap
   static void _initUrlMap() async {
-    if (File('${DocPath}/assets_data/wzry_data/libCachedImageData.db').existsSync()) {
-      final db = await openDatabase('${DocPath}/assets_data/wzry_data/libCachedImageData.db');
+    if (File('$docPath/assets_data/wzry_data/libCachedImageData.db').existsSync()) {
+      final db = await openDatabase('$docPath/assets_data/wzry_data/libCachedImageData.db');
       List<Map<String, dynamic>> result = await db.rawQuery('SELECT url,relativePath FROM cacheObject');
       for (final item in result) {
         _urlMap[item['url']] = item['relativePath'];
@@ -76,7 +80,7 @@ class FileManager {
     if (_urlMap[url]==null) {
       return url;
     } else {
-      return '${DocPath}/assets_data/wzry_data/libCachedImageData/${_urlMap[url]}';
+      return '$docPath/assets_data/wzry_data/libCachedImageData/${_urlMap[url]}';
     }
   }
 }

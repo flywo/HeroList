@@ -28,16 +28,6 @@ class _HomeContentState extends State<HomeContent> {
   void initState() {
     super.initState();
     FileManager.moveAssetToStored();
-    if (AppComponent.videos == null) {
-      getNewVideos().then((value) {
-        AppComponent.videos = value;
-      });
-    }
-    if (AppComponent.videos2 == null) {
-      getUpVideos().then((value) {
-        AppComponent.videos2 = value;
-      });
-    }
     if (AppComponent.heros == null) {
       final future = getMain();
       future.then((value) {
@@ -49,6 +39,16 @@ class _HomeContentState extends State<HomeContent> {
     } else {
       _heros = AppComponent.heros;
     }
+    if (AppComponent.videos == null) {
+      getNewVideos().then((value) {
+        AppComponent.videos = value;
+      });
+    }
+    if (AppComponent.videos2 == null) {
+      getUpVideos().then((value) {
+        AppComponent.videos2 = value;
+      });
+    }
     if (AppComponent.articles == null) {
       final future = getArticle();
       future.then((value) {
@@ -58,6 +58,11 @@ class _HomeContentState extends State<HomeContent> {
     if (AppComponent.mings == null) {
       getMings().then((value) {
         AppComponent.mings = value;
+      });
+    }
+    if (AppComponent.commonSkills == null) {
+      getCommonSkill().then((value) {
+        AppComponent.commonSkills = value;
       });
     }
   }
