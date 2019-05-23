@@ -27,6 +27,7 @@ class _HomeContentState extends State<HomeContent> {
   @override
   void initState() {
     super.initState();
+    print('初始化开始'+DateTime.now().toString());
     FileManager.moveAssetToStored();
     if (AppComponent.heros == null) {
       final future = getMain();
@@ -65,6 +66,7 @@ class _HomeContentState extends State<HomeContent> {
         AppComponent.commonSkills = value;
       });
     }
+    print('初始化结束'+DateTime.now().toString());
   }
 
   void _tidyHeroList() {
@@ -250,6 +252,7 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
+    print('开始构建界面'+DateTime.now().toString());
     return _heros.length==0? CustomWidget.buildLoadingView() : listView();
   }
 }

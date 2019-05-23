@@ -193,6 +193,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.5.0"
+  progress_dialog:
+    dependency: "direct main"
+    description:
+      name: progress_dialog
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.0+1"
   quiver:
     dependency: transitive
     description:

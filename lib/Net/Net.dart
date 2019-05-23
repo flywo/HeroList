@@ -190,10 +190,10 @@ Future<List<CommonSkill>> _parseCommonHtml(String json) async {
 Future<List<MingData>> getMings() async {
   try {
     Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get(MainUrl+MingList);
-    print('获取到skill结果，开始解析');
+    print('获取到ming结果，开始解析');
     return await _parseMingHtml(detailJson.toString());
   } catch (e) {
-    print('skill发生了错误: '+e.toString());
+    print('ming发生了错误: '+e.toString());
     return null;
   }
 }

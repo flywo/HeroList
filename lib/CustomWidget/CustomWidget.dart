@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../File/FileManager.dart';
-import 'dart:io';
 
 
 class CustomWidget {
@@ -25,13 +24,13 @@ class CustomWidget {
 
   //网络图片
   static Widget buildNetImage({double width, double height, BoxFit fit, String urlStr}) {
-    final url = FileManager.getImgPath(urlStr);
-    if (url!=urlStr) {
+    final file = FileManager.getImgPath(urlStr);
+    if (file!=null) {
       return Image(
           width: width,
           height: width,
           fit: fit,
-          image: FileImage(File(url))
+          image: FileImage(file),
       );
     }
     return CachedNetworkImage(

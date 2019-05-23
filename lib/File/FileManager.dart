@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart';
 class FileManager {
 
   static String docPath;
-  static Map<String, String> _urlMap = {};
+  static Map<String, File> _urlMap = {};
 
   //移动资源到存储
   static void moveAssetToStored() async {
@@ -66,7 +66,7 @@ class FileManager {
       final db = await openDatabase('$docPath/assets_data/wzry_data/libCachedImageData.db');
       List<Map<String, dynamic>> result = await db.rawQuery('SELECT url,relativePath FROM cacheObject');
       for (final item in result) {
-        _urlMap[item['url']] = item['relativePath'];
+        _urlMap[item['url']] = File('$docPath/assets_data/wzry_data/libCachedImageData/${item['relativePath']}');
       }
       print(_urlMap.length);
       db.close();
@@ -76,11 +76,7 @@ class FileManager {
     }
   }
   //获得图片路径，不存在则返回原url
-  static String getImgPath(String url) {
-    if (_urlMap[url]==null) {
-      return url;
-    } else {
-      return '$docPath/assets_data/wzry_data/libCachedImageData/${_urlMap[url]}';
-    }
+  static File getImgPath(String url) {
+    return _urlMap[url];
   }
 }
