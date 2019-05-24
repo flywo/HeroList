@@ -7,7 +7,7 @@ import 'package:gbk2utf8/gbk2utf8.dart';
 import '../Model/ArticleData.dart';
 import 'dart:convert';
 import '../Model/MingData.dart';
-
+import '../File/FileManager.dart';
 
 typedef void ReloadDataHandle(List<HeroSkill> skills, List<HeroSkin> skins, List<String> recommond);
 const MainUrl = 'https://pvp.qq.com/web201605/';
@@ -22,10 +22,12 @@ Future<List<HeroData>> getMain() async {
   try {
     Response response = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get(MainUrl+HeroList);
     print('获取到main结果，开始解析');
-    return await _parseHTML(response.toString());
+    String str = response.toString();
+    FileManager.saveCacheJsonData('herolist.json', str);
+    return await _parseHTML(str);
   } catch (e) {
     print('main发生了错误: '+e.toString());
-    return null;
+    return await _parseHTML(await FileManager.getCacheJsonData('herolist.json'));
   }
 }
 //解析英雄列表
@@ -133,10 +135,12 @@ Future<List<ArticleData>> getArticle() async {
   try {
     Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get(MainUrl+ItemList);
     print('获取到article结果，开始解析');
-    return await _parseArticles(detailJson.toString());
+    String str = detailJson.toString();
+    FileManager.saveCacheJsonData('item.json', str);
+    return await _parseArticles(str);
   } catch (e) {
     print('article发生了错误: '+e.toString());
-    return null;
+    return await _parseArticles(await FileManager.getCacheJsonData('item.json'));
   }
 }
 Future<List<ArticleData>> _parseArticles(String json) async {
@@ -163,10 +167,12 @@ Future<List<CommonSkill>> getCommonSkill() async {
   try {
     Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get(MainUrl+SummonerList);
     print('获取到skill结果，开始解析');
-    return await _parseCommonHtml(detailJson.toString());
+    String str = detailJson.toString();
+    FileManager.saveCacheJsonData('summoner.json', str);
+    return await _parseCommonHtml(str);
   } catch (e) {
     print('skill发生了错误: '+e.toString());
-    return null;
+    return await _parseCommonHtml(await FileManager.getCacheJsonData('summoner.json'));
   }
 }
 Future<List<CommonSkill>> _parseCommonHtml(String json) async {
@@ -191,10 +197,12 @@ Future<List<MingData>> getMings() async {
   try {
     Response detailJson = await Dio(BaseOptions(contentType: ContentType.json, responseType: ResponseType.json)).get(MainUrl+MingList);
     print('获取到ming结果，开始解析');
-    return await _parseMingHtml(detailJson.toString());
+    String str = detailJson.toString();
+    FileManager.saveCacheJsonData('ming.json', str);
+    return await _parseMingHtml(str);
   } catch (e) {
     print('ming发生了错误: '+e.toString());
-    return null;
+    return await _parseMingHtml(await FileManager.getCacheJsonData('ming.json'));
   }
 }
 Future<List<MingData>> _parseMingHtml(String json) async {

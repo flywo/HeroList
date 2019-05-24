@@ -26,47 +26,53 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   void initState() {
-    super.initState();
-    print('初始化开始'+DateTime.now().toString());
-    FileManager.moveAssetToStored();
-    if (AppComponent.heros == null) {
-      final future = getMain();
-      future.then((value) {
-        AppComponent.heros = value;
-        setState(() {
-          _heros = value;
+
+    void initStepByStep() async {
+      if (AppComponent.articles == null) {
+        await getArticle().then((value) {
+          AppComponent.articles = value;
         });
-      });
-    } else {
-      _heros = AppComponent.heros;
+      }
+      if (AppComponent.mings == null) {
+        await getMings().then((value) {
+          AppComponent.mings = value;
+        });
+      }
+      if (AppComponent.commonSkills == null) {
+        await getCommonSkill().then((value) {
+          AppComponent.commonSkills = value;
+        });
+      }
+      if (AppComponent.videos == null) {
+        await getNewVideos().then((value) {
+          AppComponent.videos = value;
+        });
+      }
+      if (AppComponent.videos2 == null) {
+        await getUpVideos().then((value) {
+          AppComponent.videos2 = value;
+        });
+      }
     }
-    if (AppComponent.videos == null) {
-      getNewVideos().then((value) {
-        AppComponent.videos = value;
-      });
-    }
-    if (AppComponent.videos2 == null) {
-      getUpVideos().then((value) {
-        AppComponent.videos2 = value;
-      });
-    }
-    if (AppComponent.articles == null) {
-      final future = getArticle();
-      future.then((value) {
-        AppComponent.articles = value;
-      });
-    }
-    if (AppComponent.mings == null) {
-      getMings().then((value) {
-        AppComponent.mings = value;
-      });
-    }
-    if (AppComponent.commonSkills == null) {
-      getCommonSkill().then((value) {
-        AppComponent.commonSkills = value;
-      });
-    }
-    print('初始化结束'+DateTime.now().toString());
+
+    FileManager.moveAssetToStored().then((value) {
+      print('开始执行$value');
+      if (AppComponent.heros == null) {
+        getMain().then((value) {
+          AppComponent.heros = value;
+          initStepByStep();
+          setState(() {
+            _heros = value;
+          });
+        });
+      } else {
+        initStepByStep();
+        setState(() {
+          _heros = AppComponent.heros;
+        });
+      }
+    });
+    super.initState();
   }
 
   void _tidyHeroList() {
@@ -252,7 +258,6 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    print('开始构建界面'+DateTime.now().toString());
     return _heros.length==0? CustomWidget.buildLoadingView() : listView();
   }
 }
